@@ -18,13 +18,8 @@ function ProductImageUpload({
 }) {
   const inputRef = useRef(null);
 
-  console.log(isEditMode, "isEditMode");
-
   function handleImageFileChange(event) {
-    console.log(event.target.files, "event.target.files");
     const selectedFile = event.target.files?.[0];
-    console.log(selectedFile);
-
     if (selectedFile) setImageFile(selectedFile);
   }
 
@@ -48,13 +43,11 @@ function ProductImageUpload({
   async function uploadImageToCloudinary() {
     setImageLoadingState(true);
     const data = new FormData();
-    data.append("my_file", imageFile);
+    data.append("image", imageFile);
     const response = await axios.post(
       "http://localhost:5000/api/admin/products/upload-image",
       data
     );
-    console.log(response, "response");
-
     if (response?.data?.success) {
       setUploadedImageUrl(response.data.result.url);
       setImageLoadingState(false);
@@ -67,20 +60,29 @@ function ProductImageUpload({
 
   return (
     <div
-      className={`w-full  mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
+      style={{
+        width: "100%",
+        marginTop: "16px",
+        ...(isCustomStyling ? {} : { maxWidth: "600px", marginInline: "auto" }),
+      }}
     >
-      <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
+      <Label style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px", display: "block" }}>
+        Upload Image
+      </Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={`${
-          isEditMode ? "opacity-60" : ""
-        } border-2 border-dashed rounded-lg p-4`}
+        style={{
+          border: "2px dashed #ccc",
+          borderRadius: "8px",
+          padding: "16px",
+          opacity: isEditMode ? 0.6 : 1,
+        }}
       >
         <Input
           id="image-upload"
           type="file"
-          className="hidden"
+          style={{ display: "none" }}
           ref={inputRef}
           onChange={handleImageFileChange}
           disabled={isEditMode}
@@ -88,29 +90,33 @@ function ProductImageUpload({
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
-            className={`${
-              isEditMode ? "cursor-not-allowed" : ""
-            } flex flex-col items-center justify-center h-32 cursor-pointer`}
+            style={{
+              cursor: isEditMode ? "not-allowed" : "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "128px",
+            }}
           >
-            <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
+            <UploadCloudIcon style={{ width: "40px", height: "40px", marginBottom: "8px", color: "#888" }} />
             <span>Drag & drop or click to upload image</span>
           </Label>
         ) : imageLoadingState ? (
-          <Skeleton className="h-10 bg-gray-100" />
+          <Skeleton style={{ height: "40px", backgroundColor: "#f3f3f3" }} />
         ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <FileIcon className="w-8 text-primary mr-2 h-8" />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <FileIcon style={{ width: "32px", height: "32px", marginRight: "8px", color: "#333" }} />
+              <p style={{ fontSize: "14px", fontWeight: "500" }}>{imageFile.name}</p>
             </div>
-            <p className="text-sm font-medium">{imageFile.name}</p>
             <Button
               variant="ghost"
               size="icon"
-              className="text-muted-foreground hover:text-foreground"
+              style={{ color: "#666" }}
               onClick={handleRemoveImage}
             >
-              <XIcon className="w-4 h-4" />
-              <span className="sr-only">Remove File</span>
+              <XIcon style={{ width: "16px", height: "16px" }} />
             </Button>
           </div>
         )}

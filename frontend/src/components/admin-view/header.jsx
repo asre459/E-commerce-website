@@ -1,5 +1,4 @@
 import { AlignJustify, LogOut } from "lucide-react";
-import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/store/auth-slice";
 
@@ -9,46 +8,55 @@ function AdminHeader({ setOpen }) {
   function handleLogout() {
     dispatch(logoutUser());
   }
+
   const style = {
     header: {
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: "0 1rem",
+      padding: "12px 16px",
       backgroundColor: "#f8f9fa",
       borderBottom: "1px solid #dee2e6",
-      border:"b"  },
-      button: {
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        padding: "0.5rem 1rem",
-        backgroundColor: "#007bff",
-        color: "#fff",
-        borderRadius: "0.25rem",
-        cursor: "pointer",
-      },
-      buttonIcon: {
-        marginRight: "0.5rem",
-      },
-
-
+    },
+    menuButton: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      padding: "8px 12px",
+      backgroundColor: "#007bff",
+      color: "black",
+      borderRadius: "4px",
+      cursor: "pointer",
+      border: "none",
+      fontSize: "14px",
+    },
+    logoutButton: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "8px",
+      padding: "8px 16px",
+      backgroundColor: "#dc3545",
+      color: "black",
+      borderRadius: "4px",
+      cursor: "pointer",
+      border: "none",
+      fontSize: "14px",
+      fontWeight: "500",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    },
   };
 
   return (
-    <header style={style.header} className="flex items-center justify-between px-4 py-3 bg-background border-b">
-      <Button onClick={() => setOpen(true)} className="lg:hidden sm:block" style={style.button}>
+    <header style={style.header}>
+      <button onClick={() => setOpen(true)} style={style.menuButton}>
         <AlignJustify />
-        <span className="sr-only" style={style.buttonIcon}>Toggle Menu</span>
-      </Button>
-      <div className="flex flex-1 justify-end">
-        <Button
-          onClick={handleLogout}
-          className="inline-flex gap-2 items-center rounded-md px-4 py-2 text-sm font-medium shadow"
-        >
+        <span style={{ fontSize: "0px" }}>Toggle Menu</span>
+      </button>
+      <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+        <button onClick={handleLogout} style={style.logoutButton}>
           <LogOut />
           Logout
-        </Button>
+        </button>
       </div>
     </header>
   );

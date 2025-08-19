@@ -34,21 +34,48 @@ function AuthLogin() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+    <div
+      style={{
+        margin: "0 auto",
+        width: "100%",
+        maxWidth: "400px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px", // space-y-6 equivalent
+      }}
+    >
+      {/* Header */}
+      <div style={{ textAlign: "center" }}>
+        <h1
+          style={{
+            fontSize: "28px",
+            fontWeight: "bold",
+            letterSpacing: "-0.5px",
+            color: "#111", // text-foreground
+            margin: 0,
+          }}
+        >
           Sign in to your account
         </h1>
-        <p className="mt-2">
-          Don't have an account
+        <p style={{ marginTop: "8px", fontSize: "14px" }}>
+          Don&apos;t have an account?
           <Link
-            className="font-medium ml-2 text-primary hover:underline"
             to="/auth/register"
+            style={{
+              marginLeft: "8px",
+              fontWeight: "500",
+              color: "#2563eb", // primary blue
+              textDecoration: "none",
+            }}
+            onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
+            onMouseOut={(e) => (e.target.style.textDecoration = "none")}
           >
             Register
           </Link>
         </p>
       </div>
+
+      {/* Form */}
       <CommonForm
         formControls={loginFormControls}
         buttonText={"Sign In"}

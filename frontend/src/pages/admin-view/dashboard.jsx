@@ -11,8 +11,6 @@ function AdminDashboard() {
   const dispatch = useDispatch();
   const { featureImageList } = useSelector((state) => state.commonFeature);
 
-  console.log(uploadedImageUrl, "uploadedImageUrl");
-
   function handleUploadFeatureImage() {
     dispatch(addFeatureImage(uploadedImageUrl)).then((data) => {
       if (data?.payload?.success) {
@@ -27,8 +25,6 @@ function AdminDashboard() {
     dispatch(getFeatureImages());
   }, [dispatch]);
 
-  console.log(featureImageList, "featureImageList");
-
   return (
     <div>
       <ProductImageUpload
@@ -39,18 +35,43 @@ function AdminDashboard() {
         setImageLoadingState={setImageLoadingState}
         imageLoadingState={imageLoadingState}
         isCustomStyling={true}
-        // isEditMode={currentEditedId !== null}
       />
-      <Button onClick={handleUploadFeatureImage} className="mt-5 w-full">
+
+      {/* Upload Button */}
+      <Button
+        onClick={handleUploadFeatureImage}
+        style={{
+          marginTop: "20px",
+          width: "100%",
+          padding: "10px 0",
+          fontWeight: "bold",
+          borderRadius: "6px",
+        }}
+      >
         Upload
       </Button>
-      <div className="flex flex-col gap-4 mt-5">
+
+      {/* Feature Image List */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "20px" }}>
         {featureImageList && featureImageList.length > 0
-          ? featureImageList.map((featureImgItem) => (
-              <div className="relative">
+          ? featureImageList.map((featureImgItem, index) => (
+              <div
+                key={index}
+                style={{
+                  position: "relative",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                }}
+              >
                 <img
                   src={featureImgItem.image}
-                  className="w-full h-[300px] object-cover rounded-t-lg"
+                  alt="Feature"
+                  style={{
+                    width: "100%",
+                    height: "300px",
+                    objectFit: "cover",
+                    borderRadius: "8px 8px 0 0",
+                  }}
                 />
               </div>
             ))

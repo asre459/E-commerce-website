@@ -20,19 +20,21 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       : 0;
 
   return (
-    <SheetContent className="sm:max-w-md">
+    <SheetContent style={{ maxWidth: "420px" }}>
       <SheetHeader>
         <SheetTitle>Your Cart</SheetTitle>
       </SheetHeader>
-      <div className="mt-8 space-y-4">
+      <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "16px" }}>
         {cartItems && cartItems.length > 0
-          ? cartItems.map((item) => <UserCartItemsContent cartItem={item} />)
+          ? cartItems.map((item, index) => (
+              <UserCartItemsContent key={index} cartItem={item} />
+            ))
           : null}
       </div>
-      <div className="mt-8 space-y-4">
-        <div className="flex justify-between">
-          <span className="font-bold">Total</span>
-          <span className="font-bold">${totalCartAmount}</span>
+      <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontWeight: "700" }}>Total</span>
+          <span style={{ fontWeight: "700" }}>${totalCartAmount.toFixed(2)}</span>
         </div>
       </div>
       <Button
@@ -40,7 +42,7 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
           navigate("/shop/checkout");
           setOpenCartSheet(false);
         }}
-        className="w-full mt-6"
+        style={{ width: "100%", marginTop: "24px" }}
       >
         Checkout
       </Button>

@@ -109,14 +109,21 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     dispatch(fetchAllAddresses(user?.id));
   }, [dispatch]);
 
-  console.log(addressList, "addressList");
-
   return (
     <Card>
-      <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
+      <div
+        style={{
+          marginBottom: "20px",
+          padding: "12px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "8px",
+        }}
+      >
         {addressList && addressList.length > 0
           ? addressList.map((singleAddressItem) => (
               <AddressCard
+                key={singleAddressItem._id}
                 selectedId={selectedId}
                 handleDeleteAddress={handleDeleteAddress}
                 addressInfo={singleAddressItem}
@@ -131,7 +138,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
           {currentEditedId !== null ? "Edit Address" : "Add New Address"}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <CommonForm
           formControls={addressFormControls}
           formData={formData}

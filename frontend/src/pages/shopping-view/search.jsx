@@ -19,17 +19,17 @@ function SearchProducts() {
   const dispatch = useDispatch();
   const { searchResults } = useSelector((state) => state.shopSearch);
   const { productDetails } = useSelector((state) => state.shopProducts);
-
   const { user } = useSelector((state) => state.auth);
-
   const { cartItems } = useSelector((state) => state.shopCart);
   const { toast } = useToast();
+
   useEffect(() => {
     if (keyword && keyword.trim() !== "" && keyword.trim().length > 3) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setSearchParams(new URLSearchParams(`?keyword=${keyword}`));
         dispatch(getSearchResults(keyword));
       }, 1000);
+      return () => clearTimeout(timer);
     } else {
       setSearchParams(new URLSearchParams(`?keyword=${keyword}`));
       dispatch(resetSearchResults());
@@ -37,7 +37,6 @@ function SearchProducts() {
   }, [keyword]);
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -51,7 +50,6 @@ function SearchProducts() {
             title: `Only ${getQuantity} quantity can be added for this item`,
             variant: "destructive",
           });
-
           return;
         }
       }
@@ -74,7 +72,6 @@ function SearchProducts() {
   }
 
   function handleGetProductDetails(getCurrentProductId) {
-    console.log(getCurrentProductId);
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
@@ -82,27 +79,63 @@ function SearchProducts() {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
 
-  console.log(searchResults, "searchResults");
+  // Inline styles
+  const containerStyle = {
+    maxWidth: "1280px",
+    margin: "0 auto",
+    padding: "2rem 1.5rem",
+  };
+
+  const searchWrapperStyle = {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "2rem",
+  };
+
+  const inputWrapperStyle = {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+  };
+
+  const inputStyle = {
+    padding: "1.5rem",
+    width: "100%",
+  };
+
+  const noResultsStyle = {
+    fontSize: "3rem",
+    fontWeight: "800",
+    textAlign: "center",
+    marginBottom: "2rem",
+  };
+
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+    gap: "1.25rem",
+  };
 
   return (
-    <div className="container mx-auto md:px-6 px-4 py-8">
-      <div className="flex justify-center mb-8">
-        <div className="w-full flex items-center">
+    <div style={containerStyle}>
+      <div style={searchWrapperStyle}>
+        <div style={inputWrapperStyle}>
           <Input
             value={keyword}
             name="keyword"
             onChange={(event) => setKeyword(event.target.value)}
-            className="py-6"
+            style={inputStyle}
             placeholder="Search Products..."
           />
         </div>
       </div>
-      {!searchResults.length ? (
-        <h1 className="text-5xl font-extrabold">No result found!</h1>
-      ) : null}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      {!searchResults.length && (
+        <h1 style={noResultsStyle}>No result found!</h1>
+      )}
+      <div style={gridStyle}>
         {searchResults.map((item) => (
           <ShoppingProductTile
+            key={item.id}
             handleAddtoCart={handleAddtoCart}
             product={item}
             handleGetProductDetails={handleGetProductDetails}

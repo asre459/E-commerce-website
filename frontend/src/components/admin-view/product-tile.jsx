@@ -9,31 +9,44 @@ function AdminProductTile({
   handleDelete,
 }) {
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card style={{ width: "100%", maxWidth: "400px", margin: "auto" }}>
       <div>
-        <div className="relative">
+        <div style={{ position: "relative" }}>
           <img
             src={product?.image}
             alt={product?.title}
-            className="w-full h-[300px] object-cover rounded-t-lg"
+            style={{
+              width: "100%",
+              height: "300px",
+              objectFit: "cover",
+              borderTopLeftRadius: "8px",
+              borderTopRightRadius: "8px",
+            }}
           />
         </div>
         <CardContent>
-          <h2 className="text-xl font-bold mb-2 mt-2">{product?.title}</h2>
-          <div className="flex justify-between items-center mb-2">
+          <h2 style={{ fontSize: "20px", fontWeight: "700", marginTop: "8px", marginBottom: "8px" }}>
+            {product?.title}
+          </h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
             <span
-              className={`${
-                product?.salePrice > 0 ? "line-through" : ""
-              } text-lg font-semibold text-primary`}
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                textDecoration: product?.salePrice > 0 ? "line-through" : "none",
+                color: "#222",
+              }}
             >
               ${product?.price}
             </span>
             {product?.salePrice > 0 ? (
-              <span className="text-lg font-bold">${product?.salePrice}</span>
+              <span style={{ fontSize: "18px", fontWeight: "700" }}>
+                ${product?.salePrice}
+              </span>
             ) : null}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-center">
+        <CardFooter style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Button
             onClick={() => {
               setOpenCreateProductsDialog(true);

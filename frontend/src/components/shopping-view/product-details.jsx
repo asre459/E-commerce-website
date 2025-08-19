@@ -24,8 +24,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const { toast } = useToast();
 
   function handleRatingChange(getRating) {
-    console.log(getRating, "getRating");
-
     setRating(getRating);
   }
 
@@ -43,11 +41,11 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             title: `Only ${getQuantity} quantity can be added for this item`,
             variant: "destructive",
           });
-
           return;
         }
       }
     }
+
     dispatch(
       addToCart({
         userId: user?.id,
@@ -96,8 +94,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
 
-  console.log(reviews, "reviews");
-
   const averageReview =
     reviews && reviews.length > 0
       ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
@@ -106,58 +102,62 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
-        <div className="relative overflow-hidden rounded-lg">
+      <DialogContent
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "32px",
+          padding: "48px",
+          maxWidth: "70vw",
+        }}
+      >
+        <div style={{ position: "relative", overflow: "hidden", borderRadius: "0.5rem" }}>
           <img
             src={productDetails?.image}
             alt={productDetails?.title}
             width={600}
             height={600}
-            className="aspect-square w-full object-cover"
+            style={{ width: "100%", objectFit: "cover", aspectRatio: "1/1" }}
           />
         </div>
-        <div className="">
+        <div>
           <div>
-            <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
+            <h1 style={{ fontSize: "2rem", fontWeight: "800" }}>{productDetails?.title}</h1>
+            <p style={{ color: "#6B7280", fontSize: "1.5rem", marginTop: "1rem", marginBottom: "1.25rem" }}>
               {productDetails?.description}
             </p>
           </div>
-          <div className="flex items-center justify-between">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <p
-              className={`text-3xl font-bold text-primary ${
-                productDetails?.salePrice > 0 ? "line-through" : ""
-              }`}
+              style={{
+                fontSize: "1.875rem",
+                fontWeight: "700",
+                color: "#3b82f6",
+                textDecoration: productDetails?.salePrice > 0 ? "line-through" : "none",
+              }}
             >
               ${productDetails?.price}
             </p>
-            {productDetails?.salePrice > 0 ? (
-              <p className="text-2xl font-bold text-muted-foreground">
+            {productDetails?.salePrice > 0 && (
+              <p style={{ fontSize: "1.5rem", fontWeight: "700", color: "#6B7280" }}>
                 ${productDetails?.salePrice}
               </p>
-            ) : null}
+            )}
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="flex items-center gap-0.5">
-              <StarRatingComponent rating={averageReview} />
-            </div>
-            <span className="text-muted-foreground">
-              ({averageReview.toFixed(2)})
-            </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "0.5rem" }}>
+            <StarRatingComponent rating={averageReview} />
+            <span style={{ color: "#6B7280" }}>({averageReview.toFixed(2)})</span>
           </div>
-          <div className="mt-5 mb-5">
+          <div style={{ marginTop: "1.25rem", marginBottom: "1.25rem" }}>
             {productDetails?.totalStock === 0 ? (
-              <Button className="w-full opacity-60 cursor-not-allowed">
+              <Button style={{ width: "100%", opacity: 0.6, cursor: "not-allowed" }}>
                 Out of Stock
               </Button>
             ) : (
               <Button
-                className="w-full"
+                style={{ width: "100%" }}
                 onClick={() =>
-                  handleAddToCart(
-                    productDetails?._id,
-                    productDetails?.totalStock
-                  )
+                  handleAddToCart(productDetails?._id, productDetails?.totalStock)
                 }
               >
                 Add to Cart
@@ -165,27 +165,25 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             )}
           </div>
           <Separator />
-          <div className="max-h-[300px] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Reviews</h2>
-            <div className="grid gap-6">
+          <div style={{ maxHeight: "300px", overflow: "auto" }}>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "1rem" }}>Reviews</h2>
+            <div style={{ display: "grid", gap: "24px" }}>
               {reviews && reviews.length > 0 ? (
                 reviews.map((reviewItem) => (
-                  <div className="flex gap-4">
-                    <Avatar className="w-10 h-10 border">
+                  <div key={reviewItem.userId} style={{ display: "flex", gap: "16px" }}>
+                    <Avatar style={{ width: "40px", height: "40px", border: "1px solid #e5e7eb" }}>
                       <AvatarFallback>
                         {reviewItem?.userName[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="grid gap-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold">{reviewItem?.userName}</h3>
+                    <div style={{ display: "grid", gap: "4px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <h3 style={{ fontWeight: "700" }}>{reviewItem?.userName}</h3>
                       </div>
-                      <div className="flex items-center gap-0.5">
+                      <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
                         <StarRatingComponent rating={reviewItem?.reviewValue} />
                       </div>
-                      <p className="text-muted-foreground">
-                        {reviewItem.reviewMessage}
-                      </p>
+                      <p style={{ color: "#6B7280" }}>{reviewItem.reviewMessage}</p>
                     </div>
                   </div>
                 ))
@@ -193,13 +191,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 <h1>No Reviews</h1>
               )}
             </div>
-            <div className="mt-10 flex-col flex gap-2">
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "2.5rem" }}>
               <Label>Write a review</Label>
-              <div className="flex gap-1">
-                <StarRatingComponent
-                  rating={rating}
-                  handleRatingChange={handleRatingChange}
-                />
+              <div style={{ display: "flex", gap: "4px" }}>
+                <StarRatingComponent rating={rating} handleRatingChange={handleRatingChange} />
               </div>
               <Input
                 name="reviewMsg"
@@ -207,10 +202,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 onChange={(event) => setReviewMsg(event.target.value)}
                 placeholder="Write a review..."
               />
-              <Button
-                onClick={handleAddReview}
-                disabled={reviewMsg.trim() === ""}
-              >
+              <Button onClick={handleAddReview} disabled={reviewMsg.trim() === ""}>
                 Submit
               </Button>
             </div>

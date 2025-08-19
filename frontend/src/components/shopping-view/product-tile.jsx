@@ -1,77 +1,124 @@
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
-import { Badge } from "../ui/badge";
 
-function ShoppingProductTile({
-  product,
-  handleGetProductDetails,
-  handleAddtoCart,
-}) {
+function ShoppingProductTile({ product, handleGetProductDetails, handleAddtoCart }) {
+  const badgeStyle = {
+    position: "absolute",
+    top: "8px",
+    left: "8px",
+    backgroundColor: "#EF4444", // red-500
+    color: "#FFFFFF",
+    padding: "4px 8px",
+    borderRadius: "4px",
+    fontSize: "0.875rem",
+    fontWeight: "500",
+    cursor: "default",
+  };
+
+  const cardStyle = {
+    width: "100%",
+    maxWidth: "24rem", // ~sm
+    margin: "0 auto",
+    borderRadius: "8px",
+    overflow: "hidden",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+    backgroundColor: "#FFFFFF",
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const imageStyle = {
+    width: "100%",
+    height: "300px",
+    objectFit: "cover",
+    cursor: "pointer",
+  };
+
+  const contentStyle = {
+    padding: "16px",
+    flexGrow: 1,
+  };
+
+  const titleStyle = {
+    fontSize: "1.25rem",
+    fontWeight: "700",
+    marginBottom: "8px",
+    cursor: "pointer",
+  };
+
+  const textStyle = {
+    fontSize: "16px",
+    color: "#6B7280", // muted-foreground
+  };
+
+  const priceStyle = (sale) => ({
+    fontSize: "1.125rem",
+    fontWeight: "600",
+    color: "#1D4ED8", // primary
+    textDecoration: sale ? "line-through" : "none",
+  });
+
+  const salePriceStyle = {
+    fontSize: "1.125rem",
+    fontWeight: "600",
+    color: "#1D4ED8",
+  };
+
+  const footerStyle = {
+    padding: "16px",
+  };
+
+  const buttonStyle = (disabled) => ({
+    width: "100%",
+    padding: "12px",
+    backgroundColor: disabled ? "#9CA3AF" : "#3B82F6", // gray if disabled, blue otherwise
+    color: "#FFFFFF",
+    fontWeight: "600",
+    border: "none",
+    borderRadius: "4px",
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.6 : 1,
+  });
+
   return (
-    <Card className="w-full max-w-sm mx-auto">
-      <div onClick={() => handleGetProductDetails(product?._id)}>
-        <div className="relative">
-          <img
-            src={product?.image}
-            alt={product?.title}
-            className="w-full h-[300px] object-cover rounded-t-lg"
-          />
-          {product?.totalStock === 0 ? (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
-              Out Of Stock
-            </Badge>
-          ) : product?.totalStock < 10 ? (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
-              {`Only ${product?.totalStock} items left`}
-            </Badge>
-          ) : product?.salePrice > 0 ? (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
-              Sale
-            </Badge>
-          ) : null}
-        </div>
-        <CardContent className="p-4">
-          <h2 className="text-xl font-bold mb-2">{product?.title}</h2>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-[16px] text-muted-foreground">
-              {categoryOptionsMap[product?.category]}
-            </span>
-            <span className="text-[16px] text-muted-foreground">
-              {brandOptionsMap[product?.brand]}
-            </span>
-          </div>
-          <div className="flex justify-between items-center mb-2">
-            <span
-              className={`${
-                product?.salePrice > 0 ? "line-through" : ""
-              } text-lg font-semibold text-primary`}
-            >
-              ${product?.price}
-            </span>
-            {product?.salePrice > 0 ? (
-              <span className="text-lg font-semibold text-primary">
-                ${product?.salePrice}
-              </span>
-            ) : null}
-          </div>
-        </CardContent>
-      </div>
-      <CardFooter>
+    <div style={cardStyle}>
+      <div onClick={() => handleGetProductDetails(product?._id)} style={{ position: "relative" }}>
+        <img src={product?.image} alt={product?.title} style={imageStyle} />
         {product?.totalStock === 0 ? (
-          <Button className="w-full opacity-60 cursor-not-allowed">
-            Out Of Stock
-          </Button>
+          <span style={badgeStyle}>Out Of Stock</span>
+        ) : product?.totalStock < 10 ? (
+          <span style={badgeStyle}>{`Only ${product?.totalStock} items left`}</span>
+        ) : product?.salePrice > 0 ? (
+          <span style={badgeStyle}>Sale</span>
+        ) : null}
+      </div>
+
+      <div style={contentStyle}>
+        <h2 style={titleStyle}>{product?.title}</h2>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+          <span style={textStyle}>{categoryOptionsMap[product?.category]}</span>
+          <span style={textStyle}>{brandOptionsMap[product?.brand]}</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+          <span style={priceStyle(product?.salePrice > 0)}>${product?.price}</span>
+          {product?.salePrice > 0 && <span style={salePriceStyle}>${product?.salePrice}</span>}
+        </div>
+      </div>
+
+      <div style={footerStyle}>
+        {product?.totalStock === 0 ? (
+          <button style={buttonStyle(true)}>Out Of Stock</button>
         ) : (
-          <Button
+          <button
+            style={buttonStyle(false)}
             onClick={() => handleAddtoCart(product?._id, product?.totalStock)}
-            className="w-full"
           >
             Add to cart
-          </Button>
+          </button>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }
 

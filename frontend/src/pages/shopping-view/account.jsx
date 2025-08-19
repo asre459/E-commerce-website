@@ -4,16 +4,52 @@ import Address from "@/components/shopping-view/address";
 import ShoppingOrders from "@/components/shopping-view/orders";
 
 function ShoppingAccount() {
+  const containerStyle = {
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const bannerStyle = {
+    position: "relative",
+    height: "300px",
+    width: "100%",
+    overflow: "hidden",
+  };
+
+  const bannerImgStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "center",
+  };
+
+  const contentWrapperStyle = {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "32px",
+    padding: "32px 0",
+    width: "90%",
+    maxWidth: "1200px",
+    margin: "0 auto",
+  };
+
+  const tabsContainerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    borderRadius: "8px",
+    border: "1px solid #E5E7EB",
+    backgroundColor: "#FFFFFF",
+    padding: "24px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  };
+
   return (
-    <div className="flex flex-col">
-      <div className="relative h-[300px] w-full overflow-hidden">
-        <img
-          src={accImg}
-          className="h-full w-full object-cover object-center"
-        />
+    <div style={containerStyle}>
+      <div style={bannerStyle}>
+        <img src={accImg} alt="Account Banner" style={bannerImgStyle} />
       </div>
-      <div className="container mx-auto grid grid-cols-1 gap-8 py-8">
-        <div className="flex flex-col rounded-lg border bg-background p-6 shadow-sm">
+      <div style={contentWrapperStyle}>
+        <div style={tabsContainerStyle}>
           <Tabs defaultValue="orders">
             <TabsList>
               <TabsTrigger value="orders">Orders</TabsTrigger>

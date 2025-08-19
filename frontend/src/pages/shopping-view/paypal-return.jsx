@@ -24,10 +24,32 @@ function PaypalReturnPage() {
     }
   }, [paymentId, payerId, dispatch]);
 
+  const cardStyle = {
+    padding: "1.5rem",
+    borderRadius: "0.5rem",
+    backgroundColor: "#fff",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+    maxWidth: "500px",
+    margin: "2rem auto",
+    textAlign: "center",
+  };
+
+  const headerStyle = {
+    padding: "0",
+  };
+
+  const titleStyle = {
+    fontSize: "1.25rem",
+    fontWeight: 600,
+    margin: 0,
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Processing Payment...Please wait!</CardTitle>
+    <Card style={cardStyle}>
+      <CardHeader style={headerStyle}>
+        <CardTitle style={titleStyle}>
+          Processing Payment... Please wait!
+        </CardTitle>
       </CardHeader>
     </Card>
   );

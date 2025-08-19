@@ -35,24 +35,49 @@ function AuthRegister() {
     });
   }
 
-  console.log(formData);
-
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+    <div
+      style={{
+        margin: "0 auto",
+        width: "100%",
+        maxWidth: "400px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px", // space-y-6
+      }}
+    >
+      {/* Header */}
+      <div style={{ textAlign: "center" }}>
+        <h1
+          style={{
+            fontSize: "28px",
+            fontWeight: "bold",
+            letterSpacing: "-0.5px",
+            color: "#111", // foreground
+            margin: 0,
+          }}
+        >
           Create new account
         </h1>
-        <p className="mt-2">
-          Already have an account
+        <p style={{ marginTop: "8px", fontSize: "14px" }}>
+          Already have an account?
           <Link
-            className="font-medium ml-2 text-primary hover:underline"
             to="/auth/login"
+            style={{
+              marginLeft: "8px",
+              fontWeight: "500",
+              color: "#2563eb", // primary color
+              textDecoration: "none",
+            }}
+            onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
+            onMouseOut={(e) => (e.target.style.textDecoration = "none")}
           >
             Login
           </Link>
         </p>
       </div>
+
+      {/* Form */}
       <CommonForm
         formControls={registerFormControls}
         buttonText={"Sign Up"}

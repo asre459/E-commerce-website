@@ -54,8 +54,6 @@ function AdminProducts() {
             formData,
           })
         ).then((data) => {
-          console.log(data, "edit");
-
           if (data?.payload?.success) {
             dispatch(fetchAllProducts());
             setFormData(initialFormData);
@@ -100,19 +98,34 @@ function AdminProducts() {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  console.log(formData, "productList");
-
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
+      {/* Header Add Button */}
+      <div
+        style={{
+          marginBottom: "20px",
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
         <Button onClick={() => setOpenCreateProductsDialog(true)}>
           Add New Product
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+
+      {/* Product Grid */}
+      <div
+        style={{
+          display: "grid",
+          gap: "16px",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+        }}
+      >
         {productList && productList.length > 0
-          ? productList.map((productItem) => (
+          ? productList.map((productItem, index) => (
               <AdminProductTile
+                key={index}
                 setFormData={setFormData}
                 setOpenCreateProductsDialog={setOpenCreateProductsDialog}
                 setCurrentEditedId={setCurrentEditedId}
@@ -122,6 +135,8 @@ function AdminProducts() {
             ))
           : null}
       </div>
+
+      {/* Sheet for Add/Edit Product */}
       <Sheet
         open={openCreateProductsDialog}
         onOpenChange={() => {
@@ -130,12 +145,21 @@ function AdminProducts() {
           setFormData(initialFormData);
         }}
       >
-        <SheetContent side="right" className="overflow-auto">
+        <SheetContent
+          side="right"
+          style={{
+            overflow: "auto",
+            padding: "20px",
+            width: "400px",
+            maxWidth: "100%",
+          }}
+        >
           <SheetHeader>
             <SheetTitle>
               {currentEditedId !== null ? "Edit Product" : "Add New Product"}
             </SheetTitle>
           </SheetHeader>
+
           <ProductImageUpload
             imageFile={imageFile}
             setImageFile={setImageFile}
@@ -145,7 +169,8 @@ function AdminProducts() {
             imageLoadingState={imageLoadingState}
             isEditMode={currentEditedId !== null}
           />
-          <div className="py-6">
+
+          <div style={{ padding: "24px 0" }}>
             <CommonForm
               onSubmit={onSubmit}
               formData={formData}

@@ -1,76 +1,76 @@
 import { Outlet } from "react-router-dom";
 
 function AuthLayout() {
-  const style = {
-    container:{
-      display: "flex",
-      minHeight: "screen",
-      width: "full",
-      height: "100vh",
-      items: "center",
-      textAlign: "center",
-      
-
-      
-    },
-    container2:{
-      hidden: "lg:flex",
-      items: "center",
-      justifyContent: "center",
-      backgroundColor: "black",
-      width: "1/2",
-      overflow: "hidden",
-      padding: "px-62",
-      color: "white",
-      textAlign: "center",
-
-    },
-    continaer3:{
-      items: "center",
-      justifyContent: "center",
-      width: "full",
-      maxWidth: "md",
-      spaceY: "6",
-      backgroundColor: "background",
-      padding: "px-4 py-12 sm:px-6 lg:px-8",
-    },
-    container4:{
-      maxWidth: "md",
-      textAlign: "center",
-      textColor: "primary-foreground",
-      textSize: "3xl",
-      fontWeight: "bold",
-      items: "center",
-      justifyContent: "center",
-      tracking: "tight",
-      text:"foreground",
-      fontSize: "3xl",
-      
-    },
-    container5:{
-      small: "hidden lg:flex flex-1 items-center justify-center bg-black px-12",
-      medium: "mx-auto w-full max-w-md space-y-6",
-      backgroundColor: "background",
-      padding: "px-4 py-12 sm:px-6 lg:px-8",
-      
-    }
-
-
-
-
-
-  }
   return (
-    <div style={style.container} >
-      <div style={style.container2} >
-        <div style={style.container3}>
-          <h1 style={style.container4}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        width: "100%",
+        height: "100vh",
+        textAlign: "center",
+      }}
+    >
+      {/* Left side */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "black",
+          width: "50%",
+          overflow: "hidden",
+          padding: "60px",
+          color: "white",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            maxWidth: "600px",
+            backgroundColor: "#f5f5f5", // you can replace with your "background"
+            padding: "48px",
+          }}
+        >
+          <h1
+            style={{
+              maxWidth: "600px",
+              textAlign: "center",
+              color: "#000", // replace with your "primary-foreground"
+              fontSize: "28px",
+              fontWeight: "bold",
+              letterSpacing: "-0.5px",
+            }}
+          >
             Welcome to ECommerce Shopping
           </h1>
         </div>
       </div>
-      <div style={style.container5} >
-        <Outlet />
+
+      {/* Right side */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f5f5f5", // replace with your theme background
+          padding: "48px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "400px",
+          }}
+        >
+          <Outlet />
+        </div>
       </div>
     </div>
   );

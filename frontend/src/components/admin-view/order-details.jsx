@@ -12,9 +12,7 @@ import {
 } from "@/store/admin/order-slice";
 import { useToast } from "../ui/use-toast";
 
-const initialFormData = {
-  status: "",
-};
+const initialFormData = { status: "" };
 
 function AdminOrderDetailsView({ orderDetails }) {
   const [formData, setFormData] = useState(initialFormData);
@@ -22,88 +20,91 @@ function AdminOrderDetailsView({ orderDetails }) {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  console.log(orderDetails, "orderDetailsorderDetails");
-
   function handleUpdateStatus(event) {
     event.preventDefault();
     const { status } = formData;
-
-    dispatch(
-      updateOrderStatus({ id: orderDetails?._id, orderStatus: status })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(getOrderDetailsForAdmin(orderDetails?._id));
-        dispatch(getAllOrdersForAdmin());
-        setFormData(initialFormData);
-        toast({
-          title: data?.payload?.message,
-        });
-      }
-    });
+    dispatch(updateOrderStatus({ id: orderDetails?._id, orderStatus: status }))
+      .then((data) => {
+        if (data?.payload?.success) {
+          dispatch(getOrderDetailsForAdmin(orderDetails?._id));
+          dispatch(getAllOrdersForAdmin());
+          setFormData(initialFormData);
+          toast({ title: data?.payload?.message });
+        }
+      });
   }
 
   return (
-    <DialogContent className="sm:max-w-[600px]">
-      <div className="grid gap-6">
-        <div className="grid gap-2">
-          <div className="flex mt-6 items-center justify-between">
-            <p className="font-medium">Order ID</p>
+    <DialogContent style={{ maxWidth: "600px" }}>
+      <div style={{ display: "grid", gap: "24px" }}>
+        <div style={{ display: "grid", gap: "8px" }}>
+          <div style={{ display: "flex", marginTop: "24px", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontWeight: "500" }}>Order ID</p>
             <Label>{orderDetails?._id}</Label>
           </div>
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Date</p>
+
+          <div style={{ display: "flex", marginTop: "8px", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontWeight: "500" }}>Order Date</p>
             <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
           </div>
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Price</p>
+
+          <div style={{ display: "flex", marginTop: "8px", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontWeight: "500" }}>Order Price</p>
             <Label>${orderDetails?.totalAmount}</Label>
           </div>
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Payment method</p>
+
+          <div style={{ display: "flex", marginTop: "8px", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontWeight: "500" }}>Payment method</p>
             <Label>{orderDetails?.paymentMethod}</Label>
           </div>
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Payment Status</p>
+
+          <div style={{ display: "flex", marginTop: "8px", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontWeight: "500" }}>Payment Status</p>
             <Label>{orderDetails?.paymentStatus}</Label>
           </div>
-          <div className="flex mt-2 items-center justify-between">
-            <p className="font-medium">Order Status</p>
+
+          <div style={{ display: "flex", marginTop: "8px", justifyContent: "space-between", alignItems: "center" }}>
+            <p style={{ fontWeight: "500" }}>Order Status</p>
             <Label>
               <Badge
-                className={`py-1 px-3 ${
-                  orderDetails?.orderStatus === "confirmed"
-                    ? "bg-green-500"
-                    : orderDetails?.orderStatus === "rejected"
-                    ? "bg-red-600"
-                    : "bg-black"
-                }`}
+                style={{
+                  padding: "4px 12px",
+                  backgroundColor:
+                    orderDetails?.orderStatus === "confirmed"
+                      ? "#22c55e"
+                      : orderDetails?.orderStatus === "rejected"
+                      ? "#dc2626"
+                      : "#000",
+                  color: "#fff"
+                }}
               >
                 {orderDetails?.orderStatus}
               </Badge>
             </Label>
           </div>
         </div>
+
         <Separator />
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <div className="font-medium">Order Details</div>
-            <ul className="grid gap-3">
-              {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
-                ? orderDetails?.cartItems.map((item) => (
-                    <li className="flex items-center justify-between">
-                      <span>Title: {item.title}</span>
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Price: ${item.price}</span>
-                    </li>
-                  ))
-                : null}
+
+        <div style={{ display: "grid", gap: "16px" }}>
+          <div>
+            <div style={{ fontWeight: "500" }}>Order Details</div>
+            <ul style={{ display: "grid", gap: "12px" }}>
+              {orderDetails?.cartItems?.map((item) => (
+                <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span>Title: {item.title}</span>
+                  <span>Quantity: {item.quantity}</span>
+                  <span>Price: ${item.price}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <div className="font-medium">Shipping Info</div>
-            <div className="grid gap-0.5 text-muted-foreground">
+
+        <div style={{ display: "grid", gap: "16px" }}>
+          <div>
+            <div style={{ fontWeight: "500" }}>Shipping Info</div>
+            <div style={{ display: "grid", gap: "4px", color: "#6b7280" }}>
               <span>{user.userName}</span>
               <span>{orderDetails?.addressInfo?.address}</span>
               <span>{orderDetails?.addressInfo?.city}</span>
@@ -116,23 +117,21 @@ function AdminOrderDetailsView({ orderDetails }) {
 
         <div>
           <CommonForm
-            formControls={[
-              {
-                label: "Order Status",
-                name: "status",
-                componentType: "select",
-                options: [
-                  { id: "pending", label: "Pending" },
-                  { id: "inProcess", label: "In Process" },
-                  { id: "inShipping", label: "In Shipping" },
-                  { id: "delivered", label: "Delivered" },
-                  { id: "rejected", label: "Rejected" },
-                ],
-              },
-            ]}
+            formControls={[{
+              label: "Order Status",
+              name: "status",
+              componentType: "select",
+              options: [
+                { id: "pending", label: "Pending" },
+                { id: "inProcess", label: "In Process" },
+                { id: "inShipping", label: "In Shipping" },
+                { id: "delivered", label: "Delivered" },
+                { id: "rejected", label: "Rejected" },
+              ],
+            }]}
             formData={formData}
             setFormData={setFormData}
-            buttonText={"Update Order Status"}
+            buttonText="Update Order Status"
             onSubmit={handleUpdateStatus}
           />
         </div>

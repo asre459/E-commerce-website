@@ -12,9 +12,8 @@ function UserCartItemsContent({ cartItem }) {
   const { toast } = useToast();
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
-    if (typeOfAction == "plus") {
+    if (typeOfAction === "plus") {
       let getCartItems = cartItems.items || [];
-
       if (getCartItems.length) {
         const indexOfCurrentCartItem = getCartItems.findIndex(
           (item) => item.productId === getCartItem?.productId
@@ -25,8 +24,6 @@ function UserCartItemsContent({ cartItem }) {
         );
         const getTotalStock = productList[getCurrentProductIndex].totalStock;
 
-        console.log(getCurrentProductIndex, getTotalStock, "getTotalStock");
-
         if (indexOfCurrentCartItem > -1) {
           const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
           if (getQuantity + 1 > getTotalStock) {
@@ -34,7 +31,6 @@ function UserCartItemsContent({ cartItem }) {
               title: `Only ${getQuantity} quantity can be added for this item`,
               variant: "destructive",
             });
-
             return;
           }
         }
@@ -72,39 +68,54 @@ function UserCartItemsContent({ cartItem }) {
   }
 
   return (
-    <div className="flex items-center space-x-4">
+    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
       <img
         src={cartItem?.image}
         alt={cartItem?.title}
-        className="w-20 h-20 rounded object-cover"
+        style={{
+          width: "80px",
+          height: "80px",
+          borderRadius: "8px",
+          objectFit: "cover",
+        }}
       />
-      <div className="flex-1">
-        <h3 className="font-extrabold">{cartItem?.title}</h3>
-        <div className="flex items-center gap-2 mt-1">
+      <div style={{ flex: 1 }}>
+        <h3 style={{ fontWeight: "800" }}>{cartItem?.title}</h3>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px" }}>
           <Button
             variant="outline"
-            className="h-8 w-8 rounded-full"
+            style={{
+              height: "32px",
+              width: "32px",
+              borderRadius: "50%",
+              padding: "0",
+            }}
             size="icon"
             disabled={cartItem?.quantity === 1}
             onClick={() => handleUpdateQuantity(cartItem, "minus")}
           >
-            <Minus className="w-4 h-4" />
-            <span className="sr-only">Decrease</span>
+            <Minus style={{ width: "16px", height: "16px" }} />
+            <span style={{ display: "none" }}>Decrease</span>
           </Button>
-          <span className="font-semibold">{cartItem?.quantity}</span>
+          <span style={{ fontWeight: "600" }}>{cartItem?.quantity}</span>
           <Button
             variant="outline"
-            className="h-8 w-8 rounded-full"
+            style={{
+              height: "32px",
+              width: "32px",
+              borderRadius: "50%",
+              padding: "0",
+            }}
             size="icon"
             onClick={() => handleUpdateQuantity(cartItem, "plus")}
           >
-            <Plus className="w-4 h-4" />
-            <span className="sr-only">Decrease</span>
+            <Plus style={{ width: "16px", height: "16px" }} />
+            <span style={{ display: "none" }}>Increase</span>
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-end">
-        <p className="font-semibold">
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+        <p style={{ fontWeight: "600" }}>
           $
           {(
             (cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
@@ -113,7 +124,7 @@ function UserCartItemsContent({ cartItem }) {
         </p>
         <Trash
           onClick={() => handleCartItemDelete(cartItem)}
-          className="cursor-pointer mt-1"
+          style={{ cursor: "pointer", marginTop: "4px" }}
           size={20}
         />
       </div>

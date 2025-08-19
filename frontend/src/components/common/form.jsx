@@ -39,7 +39,6 @@ function CommonForm({
             }
           />
         );
-
         break;
       case "select":
         element = (
@@ -52,7 +51,7 @@ function CommonForm({
             }
             value={value}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger style={{ width: "100%" }}>
               <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
@@ -66,7 +65,6 @@ function CommonForm({
             </SelectContent>
           </Select>
         );
-
         break;
       case "textarea":
         element = (
@@ -83,9 +81,7 @@ function CommonForm({
             }
           />
         );
-
         break;
-
       default:
         element = (
           <Input
@@ -110,15 +106,26 @@ function CommonForm({
 
   return (
     <form onSubmit={onSubmit}>
-      <div className="flex flex-col gap-3">
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {formControls.map((controlItem) => (
-          <div className="grid w-full gap-1.5" key={controlItem.name}>
-            <Label className="mb-1">{controlItem.label}</Label>
+          <div
+            key={controlItem.name}
+            style={{
+              display: "grid",
+              width: "100%",
+              gap: "6px",
+            }}
+          >
+            <Label style={{ marginBottom: "4px" }}>{controlItem.label}</Label>
             {renderInputsByComponentType(controlItem)}
           </div>
         ))}
       </div>
-      <Button disabled={isBtnDisabled} type="submit" className="mt-2 w-full">
+      <Button
+        disabled={isBtnDisabled}
+        type="submit"
+        style={{ marginTop: "8px", width: "100%" }}
+      >
         {buttonText || "Submit"}
       </Button>
     </form>

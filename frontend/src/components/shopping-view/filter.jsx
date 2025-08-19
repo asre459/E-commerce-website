@@ -6,18 +6,38 @@ import { Separator } from "../ui/separator";
 
 function ProductFilter({ filters, handleFilter }) {
   return (
-    <div className="bg-background rounded-lg shadow-sm">
-      <div className="p-4 border-b">
-        <h2 className="text-lg font-extrabold">Filters</h2>
+    <div
+      style={{
+        background: "var(--background)",
+        borderRadius: "8px",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+      }}
+    >
+      <div
+        style={{
+          padding: "16px",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        <h2 style={{ fontSize: "18px", fontWeight: "800" }}>Filters</h2>
       </div>
-      <div className="p-4 space-y-4">
+      <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
         {Object.keys(filterOptions).map((keyItem) => (
-          <Fragment>
+          <Fragment key={keyItem}>
             <div>
-              <h3 className="text-base font-bold">{keyItem}</h3>
-              <div className="grid gap-2 mt-2">
+              <h3 style={{ fontSize: "16px", fontWeight: "700" }}>{keyItem}</h3>
+              <div style={{ display: "grid", gap: "8px", marginTop: "8px" }}>
                 {filterOptions[keyItem].map((option) => (
-                  <Label className="flex font-medium items-center gap-2 ">
+                  <Label
+                    key={option.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                    }}
+                  >
                     <Checkbox
                       checked={
                         filters &&

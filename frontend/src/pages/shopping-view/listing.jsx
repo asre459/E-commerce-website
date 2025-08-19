@@ -27,7 +27,6 @@ function createSearchParamsHelper(filterParams) {
   for (const [key, value] of Object.entries(filterParams)) {
     if (Array.isArray(value) && value.length > 0) {
       const paramValue = value.join(",");
-
       queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
     }
   }
@@ -145,34 +144,59 @@ function ShoppingListing() {
 
   console.log(productList, "productListproductListproductList");
 
+  // Inline styles
+  const containerStyle = {
+    display: "grid",
+    gridTemplateColumns: "200px 1fr",
+    gap: "1.5rem",
+    padding: "1rem",
+  };
+
+  const listingCardStyle = {
+    backgroundColor: "#f9fafb",
+    width: "100%",
+    borderRadius: "0.5rem",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+  };
+
+  const headerStyle = {
+    padding: "1rem",
+    borderBottom: "1px solid #e5e7eb",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  };
+
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gap: "1rem",
+    padding: "1rem",
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
+    <div style={containerStyle}>
       <ProductFilter filters={filters} handleFilter={handleFilter} />
-      <div className="bg-background w-full rounded-lg shadow-sm">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">All Products</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">
-              {productList?.length} Products
-            </span>
+      <div style={listingCardStyle}>
+        <div style={headerStyle}>
+          <h2 style={{ fontSize: "1.125rem", fontWeight: 800 }}>All Products</h2>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+            <span style={{ color: "#6b7280" }}>{productList?.length} Products</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-1"
+                  style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
                 >
-                  <ArrowUpDownIcon className="h-4 w-4" />
+                  <ArrowUpDownIcon style={{ width: "1rem", height: "1rem" }} />
                   <span>Sort by</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
+              <DropdownMenuContent align="end" style={{ width: "200px" }}>
                 <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem
-                      value={sortItem.id}
-                      key={sortItem.id}
-                    >
+                    <DropdownMenuRadioItem value={sortItem.id} key={sortItem.id}>
                       {sortItem.label}
                     </DropdownMenuRadioItem>
                   ))}
@@ -181,7 +205,7 @@ function ShoppingListing() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+        <div style={gridStyle}>
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile

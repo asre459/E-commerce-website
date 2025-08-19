@@ -5,7 +5,6 @@ import UserCartItemsContent from "@/components/shopping-view/cart-items-content"
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
-import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
 function ShoppingCheckout() {
@@ -13,11 +12,9 @@ function ShoppingCheckout() {
   const { user } = useSelector((state) => state.auth);
   const { approvalURL } = useSelector((state) => state.shopOrder);
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
-  const [isPaymentStart, setIsPaymemntStart] = useState(false);
+  const [isPaymentStart, setIsPaymentStart] = useState(false);
   const dispatch = useDispatch();
   const { toast } = useToast();
-
-  console.log(currentSelectedAddress, "cartItems");
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -33,35 +30,24 @@ function ShoppingCheckout() {
       : 0;
 
   function handleInitiatePaypalPayment() {
-    if (cartItems.length === 0) {
-      toast({
-        title: "Your cart is empty. Please add items to proceed",
-        variant: "destructive",
-      });
-
+    if (!cartItems || cartItems.items.length === 0) {
+      toast({ title: "Your cart is empty. Please add items to proceed", variant: "destructive" });
       return;
     }
-    if (currentSelectedAddress === null) {
-      toast({
-        title: "Please select one address to proceed.",
-        variant: "destructive",
-      });
-
+    if (!currentSelectedAddress) {
+      toast({ title: "Please select one address to proceed.", variant: "destructive" });
       return;
     }
 
     const orderData = {
       userId: user?.id,
       cartId: cartItems?._id,
-      cartItems: cartItems.items.map((singleCartItem) => ({
-        productId: singleCartItem?.productId,
-        title: singleCartItem?.title,
-        image: singleCartItem?.image,
-        price:
-          singleCartItem?.salePrice > 0
-            ? singleCartItem?.salePrice
-            : singleCartItem?.price,
-        quantity: singleCartItem?.quantity,
+      cartItems: cartItems.items.map((item) => ({
+        productId: item?.productId,
+        title: item?.title,
+        image: item?.image,
+        price: item?.salePrice > 0 ? item?.salePrice : item?.price,
+        quantity: item?.quantity,
       })),
       addressInfo: {
         addressId: currentSelectedAddress?._id,
@@ -82,12 +68,7 @@ function ShoppingCheckout() {
     };
 
     dispatch(createNewOrder(orderData)).then((data) => {
-      console.log(data, "sangam");
-      if (data?.payload?.success) {
-        setIsPaymemntStart(true);
-      } else {
-        setIsPaymemntStart(false);
-      }
+      setIsPaymentStart(data?.payload?.success || false);
     });
   }
 
@@ -95,35 +76,39 @@ function ShoppingCheckout() {
     window.location.href = approvalURL;
   }
 
+  // Inline Styles
+  const containerStyle = { display: "flex", flexDirection: "column" };
+  const bannerStyle = { position: "relative", height: "300px", width: "100%", overflow: "hidden" };
+  const bannerImgStyle = { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" };
+  const gridStyle = {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "20px",
+    marginTop: "20px",
+    padding: "20px",
+  };
+  const gridResponsiveStyle = { gridTemplateColumns: "repeat(2, 1fr)" };
+  const rightColumnStyle = { display: "flex", flexDirection: "column", gap: "16px" };
+  const totalStyle = { display: "flex", justifyContent: "space-between", fontWeight: "bold", marginTop: "16px" };
+  const buttonStyle = { width: "100%", padding: "12px", fontWeight: "600", cursor: "pointer" };
+
   return (
-    <div className="flex flex-col">
-      <div className="relative h-[300px] w-full overflow-hidden">
-        <img src={img} className="h-full w-full object-cover object-center" />
+    <div style={containerStyle}>
+      <div style={bannerStyle}>
+        <img src={img} alt="Checkout Banner" style={bannerImgStyle} />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5 p-5">
-        <Address
-          selectedId={currentSelectedAddress}
-          setCurrentSelectedAddress={setCurrentSelectedAddress}
-        />
-        <div className="flex flex-col gap-4">
-          {cartItems && cartItems.items && cartItems.items.length > 0
-            ? cartItems.items.map((item) => (
-                <UserCartItemsContent cartItem={item} />
-              ))
-            : null}
-          <div className="mt-8 space-y-4">
-            <div className="flex justify-between">
-              <span className="font-bold">Total</span>
-              <span className="font-bold">${totalCartAmount}</span>
-            </div>
+      <div style={{ ...gridStyle, ...(window.innerWidth > 640 ? gridResponsiveStyle : {}) }}>
+        <Address selectedId={currentSelectedAddress} setCurrentSelectedAddress={setCurrentSelectedAddress} />
+        <div style={rightColumnStyle}>
+          {cartItems && cartItems.items && cartItems.items.length > 0 &&
+            cartItems.items.map((item) => <UserCartItemsContent cartItem={item} />)}
+          <div style={totalStyle}>
+            <span>Total</span>
+            <span>${totalCartAmount}</span>
           </div>
-          <div className="mt-4 w-full">
-            <Button onClick={handleInitiatePaypalPayment} className="w-full">
-              {isPaymentStart
-                ? "Processing Paypal Payment..."
-                : "Checkout with Paypal"}
-            </Button>
-          </div>
+          <button style={buttonStyle} onClick={handleInitiatePaypalPayment}>
+            {isPaymentStart ? "Processing Paypal Payment..." : "Checkout with Paypal"}
+          </button>
         </div>
       </div>
     </div>
