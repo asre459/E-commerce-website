@@ -13,7 +13,7 @@ function AdminProductTile({
       <div>
         <div style={{ position: "relative" }}>
           <img
-            src={product?.image}
+            src={product?.image|| null}
             alt={product?.title}
             style={{
               width: "100%",

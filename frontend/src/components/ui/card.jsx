@@ -1,93 +1,119 @@
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
-
-function Card({
-  className,
-  ...props
-}) {
+function Card({ style, ...props }) {
   return (
-    (<div
+    <div
       data-slot="card"
-      className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
-        className
-      )}
-      {...props} />)
-  );
+      style={{
+        backgroundColor: "#ffffff", // bg-card (white by default)
+        color: "#111827", // text-card-foreground (gray-900 equivalent)
+        display: "flex",
+        flexDirection: "column",
+        gap: "1.5rem", // gap-6
+        borderRadius: "0.75rem", // rounded-xl
+        border: "1px solid #e5e7eb", // border (gray-200)
+        paddingTop: "1.5rem", // py-6
+        paddingBottom: "1.5rem",
+        boxShadow: "0 1px 2px 0 rgba(0,0,0,0.05)", // shadow-sm
+        ...style,
+      }}
+      {...props}
+    />
+  )
 }
 
-function CardHeader({
-  className,
-  ...props
-}) {
+function CardHeader({ style, ...props }) {
   return (
-    (<div
+    <div
       data-slot="card-header"
-      className={cn(
-        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
-        className
-      )}
-      {...props} />)
-  );
+      style={{
+        display: "grid",
+        gridAutoRows: "min-content", // auto-rows-min
+        gridTemplateRows: "auto auto",
+        alignItems: "start",
+        gap: "0.375rem", // gap-1.5
+        paddingLeft: "1.5rem", // px-6
+        paddingRight: "1.5rem",
+        ...style,
+      }}
+      {...props}
+    />
+  )
 }
 
-function CardTitle({
-  className,
-  ...props
-}) {
+function CardTitle({ style, ...props }) {
   return (
-    (<div
+    <div
       data-slot="card-title"
-      className={cn("leading-none font-semibold", className)}
-      {...props} />)
-  );
+      style={{
+        lineHeight: "1", // leading-none
+        fontWeight: 600, // font-semibold
+        ...style,
+      }}
+      {...props}
+    />
+  )
 }
 
-function CardDescription({
-  className,
-  ...props
-}) {
+function CardDescription({ style, ...props }) {
   return (
-    (<div
+    <div
       data-slot="card-description"
-      className={cn("text-muted-foreground text-sm", className)}
-      {...props} />)
-  );
+      style={{
+        color: "#6b7280", // text-muted-foreground (gray-500)
+        fontSize: "0.875rem", // text-sm
+        ...style,
+      }}
+      {...props}
+    />
+  )
 }
 
-function CardAction({
-  className,
-  ...props
-}) {
+function CardAction({ style, ...props }) {
   return (
-    (<div
+    <div
       data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
-      )}
-      {...props} />)
-  );
+      style={{
+        gridColumnStart: 2,
+        gridRowStart: 1,
+        gridRowEnd: "span 2",
+        alignSelf: "start",
+        justifySelf: "end",
+        ...style,
+      }}
+      {...props}
+    />
+  )
 }
 
-function CardContent({
-  className,
-  ...props
-}) {
-  return (<div data-slot="card-content" className={cn("px-6", className)} {...props} />);
-}
-
-function CardFooter({
-  className,
-  ...props
-}) {
+function CardContent({ style, ...props }) {
   return (
-    (<div
+    <div
+      data-slot="card-content"
+      style={{
+        paddingLeft: "1.5rem", // px-6
+        paddingRight: "1.5rem",
+        ...style,
+      }}
+      {...props}
+    />
+  )
+}
+
+function CardFooter({ style, ...props }) {
+  return (
+    <div
       data-slot="card-footer"
-      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
-      {...props} />)
-  );
+      style={{
+        display: "flex",
+        alignItems: "center",
+        paddingLeft: "1.5rem", // px-6
+        paddingRight: "1.5rem",
+        ...style,
+      }}
+      {...props}
+    />
+  )
 }
 
 export {

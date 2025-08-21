@@ -1,27 +1,65 @@
 const { imageUploadUtil } = require("../../helpers/cloudinary");
 const Product = require("../../models/Product");
+// const handleImageUpload = async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ error: "No file uploaded" });
+//     }
+
+//     const uploadResult = await imageUploadUtil(req.file);
+    
+//     if (!uploadResult.success) {
+//       return res.status(400).json({ error: uploadResult.error });
+//     }
+
+//     res.json({
+//       imageUrl: uploadResult.result.secure_url,
+//       publicId: uploadResult.result.public_id
+//     });
+//   } catch (error) {
+//     console.error("Upload failed:", error);
+//     res.status(500).json({ error: "Image upload failed" });
+//   }
+// };
 const handleImageUpload = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+      return res.status(400).json({ 
+        success: false,
+        error: "No file uploaded" 
+      });
     }
+
+    console.log("File received:", {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
 
     const uploadResult = await imageUploadUtil(req.file);
     
     if (!uploadResult.success) {
-      return res.status(400).json({ error: uploadResult.error });
+      return res.status(400).json({ 
+        success: false,
+        error: uploadResult.error 
+      });
     }
 
     res.json({
-      imageUrl: uploadResult.result.secure_url,
-      publicId: uploadResult.result.public_id
+      success: true,
+      result: {
+        url: uploadResult.result.secure_url,
+        public_id: uploadResult.result.public_id
+      }
     });
   } catch (error) {
     console.error("Upload failed:", error);
-    res.status(500).json({ error: "Image upload failed" });
+    res.status(500).json({ 
+      success: false,
+      error: "Image upload failed: " + error.message 
+    });
   }
 };
-
 //add a new product
 const addProduct = async (req, res) => {
   try {
