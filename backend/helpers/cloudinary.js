@@ -9,18 +9,18 @@ cloudinary.config({
 });
 
 const storage = new multer.memoryStorage();
-const upload = multer({ storage });
+
 
 async function imageUploadUtil(file) {
   try {
     // Convert buffer to data URI if needed
     const fileStr = file.buffer ? `data:${file.mimetype};base64,${file.buffer.toString('base64')}` : file;
     
-    const result = await cloudinary.uploader.upload(fileStr, {
+    const result = await cloudinary.uploader.upload(file, {
       resource_type: "auto", // Automatically detect image/video/raw
-      folder: "uploads", // Optional: organize files in a folder
-      quality: "auto", // Optional: automatic quality adjustment
-      fetch_format: "auto", // Optional: automatic format conversion
+      // folder: "uploads", // Optional: organize files in a folder
+      // quality: "auto", // Optional: automatic quality adjustment
+      // fetch_format: "auto", // Optional: automatic format conversion
     });
 
     return {
@@ -34,6 +34,7 @@ async function imageUploadUtil(file) {
       error: error.message
     };
   }
-}
+}const upload = multer({ storage });
+
 
 module.exports = { upload, imageUploadUtil };

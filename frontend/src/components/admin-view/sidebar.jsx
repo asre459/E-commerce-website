@@ -3,6 +3,7 @@ import {
   ChartNoAxesCombined,
   LayoutDashboard,
   ShoppingBasket,
+  X
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -82,8 +83,13 @@ function AdminSideBar({ open, setOpen }) {
                 <ChartNoAxesCombined size={30} />
                 <h1 style={{ fontSize: "20px", fontWeight: "800" }}>Admin Panel</h1>
               </SheetTitle>
+               <X 
+                size={24} 
+                onClick={() => setOpen(false)} 
+                style={{ cursor: "pointer" }}
+              />
             </SheetHeader>
-            <MenuItems setOpen={setOpen} />
+            <MenuItems setOpen={setOpen} isMobile={true}  />
           </div>
         </SheetContent>
       </Sheet>

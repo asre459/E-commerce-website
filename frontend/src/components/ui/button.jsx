@@ -1,55 +1,83 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva } from "class-variance-authority";
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
-import { cn } from "@/lib/utils"
+const baseStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "0.5rem",
+  whiteSpace: "nowrap",
+  borderRadius: "0.375rem",
+  fontSize: "0.875rem",
+  fontWeight: "500",
+  transition: "all 0.2s ease-in-out",
+  outline: "none",
+  cursor: "pointer",
+};
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
+// Variants
+const variantStyles = {
+  default: {
+    backgroundColor: "var(--primary)",
+    color: "var(--primary-foreground)",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+  },
+  destructive: {
+    backgroundColor: "var(--destructive)",
+    color: "#fff",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+  },
+  outline: {
+    border: "1px solid var(--input, #ddd)",
+    backgroundColor: "var(--background)",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+  },
+  secondary: {
+    backgroundColor: "var(--secondary)",
+    color: "var(--secondary-foreground)",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+  },
+  ghost: {
+    backgroundColor: "transparent",
+    color: "inherit",
+  },
+  link: {
+    backgroundColor: "transparent",
+    color: "var(--primary)",
+    textDecoration: "underline",
+    textUnderlineOffset: "4px",
+  },
+};
+
+// Sizes
+const sizeStyles = {
+  default: { height: "2.25rem", padding: "0.5rem 1rem" },
+  sm: { height: "2rem", padding: "0.25rem 0.75rem", gap: "0.375rem" },
+  lg: { height: "2.5rem", padding: "0.5rem 1.5rem" },
+  icon: { width: "2.25rem", height: "2.25rem", padding: "0" },
+};
 
 function Button({
-  className,
-  variant,
-  size,
+  style,
+  variant = "default",
+  size = "default",
   asChild = false,
+  disabled = false,
   ...props
 }) {
-  const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? Slot : "button";
 
-  return (
-    (<Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />)
-  );
+  const mergedStyle = {
+    ...baseStyle,
+    ...variantStyles[variant],
+    ...sizeStyles[size],
+    ...(disabled
+      ? { opacity: 0.5, pointerEvents: "none", cursor: "not-allowed" }
+      : {}),
+    ...style, // allow overrides
+  };
+
+  return <Comp style={mergedStyle} disabled={disabled} {...props} />;
 }
 
-export { Button, buttonVariants }
+export { Button };
