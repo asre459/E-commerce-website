@@ -19,6 +19,11 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
+
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'];
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
 
@@ -28,10 +33,6 @@ app.use(express.static(path.join(__dirname1, 'client', 'dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname1, 'client', 'dist', 'index.html'));
 });
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'];
 
 app.use(
   cors({
