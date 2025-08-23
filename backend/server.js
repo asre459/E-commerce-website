@@ -5,6 +5,8 @@ const cors = require("cors");
 const dotenv = require('dotenv');
 
 dotenv.config();
+const path = require("path");
+const __dirname1 = path.resolve();
 
 const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
