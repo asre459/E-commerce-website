@@ -27,11 +27,11 @@ const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'];
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
 
-app.use(express.static(path.join(__dirname1, 'client', 'dist')));
+app.use(express.static(path.join(__dirname1, 'frontend', 'dist')));
 
 // Catch-all: send index.html for React Router routes
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname1, 'client', 'dist', 'index.html'));
+  res.sendFile(path.resolve(__dirname1, 'frontend', 'dist', 'index.html'));
 });
 
 app.use(
