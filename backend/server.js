@@ -63,11 +63,7 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
-mongoose.connect(process.env.MONGO_URI,{
-  serverSelectionTimeoutMS: 180000, // 30 seconds
-  socketTimeoutMS: 195000, // 45 seconds
-   family: 4 // Force IPv4
-}
+mongoose.connect(process.env.MONGO_URI
 )
   .then(() => {
     console.log("✅ MongoDB connected");
