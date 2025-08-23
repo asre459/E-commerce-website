@@ -22,7 +22,12 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
 
+app.use(express.static(path.join(__dirname1, 'client', 'dist')));
 
+// Catch-all: send index.html for React Router routes
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname1, 'client', 'dist', 'index.html'));
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
