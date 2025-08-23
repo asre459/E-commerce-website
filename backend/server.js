@@ -5,8 +5,6 @@ const cors = require("cors");
 const dotenv = require('dotenv');
 
 dotenv.config();
-const path = require("path");
-const __dirname1 = path.resolve();
 
 const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
@@ -21,20 +19,14 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
+//create a database connection -> u can also
+//create a separate file for this and then import/use that file here
+
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'];
-//create a database connection -> u can also
-//create a separate file for this and then import/use that file here
-
-app.use(express.static(path.join(__dirname1, 'frontend', 'dist')));
-
-// Catch-all: send index.html for React Router routes
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname1, 'frontend', 'dist', 'index.html'));
-});
 
 app.use(
   cors({
