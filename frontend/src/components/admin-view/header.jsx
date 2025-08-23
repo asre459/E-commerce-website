@@ -15,7 +15,7 @@ function AdminHeader({ setOpen }) {
       alignItems: "center",
       justifyContent: "space-between",
       padding: "12px 16px",
-      backgroundColor: "#f8f9fa",
+      backgroundColor: "#cadbecff",
       borderBottom: "1px solid #dee2e6",
     },
     menuButton: {

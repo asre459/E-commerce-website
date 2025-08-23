@@ -1,26 +1,5 @@
 const { imageUploadUtil } = require("../../helpers/cloudinary");
 const Product = require("../../models/Product");
-// const handleImageUpload = async (req, res) => {
-//   try {
-//     if (!req.file) {
-//       return res.status(400).json({ error: "No file uploaded" });
-//     }
-
-//     const uploadResult = await imageUploadUtil(req.file);
-    
-//     if (!uploadResult.success) {
-//       return res.status(400).json({ error: uploadResult.error });
-//     }
-
-//     res.json({
-//       imageUrl: uploadResult.result.secure_url,
-//       publicId: uploadResult.result.public_id
-//     });
-//   } catch (error) {
-//     console.error("Upload failed:", error);
-//     res.status(500).json({ error: "Image upload failed" });
-//   }
-// };
 const handleImageUpload = async (req, res) => {
   try {
     if (!req.file) {

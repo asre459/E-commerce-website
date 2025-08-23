@@ -49,11 +49,11 @@ function MenuItems({ setOpen }) {
             padding: "8px 12px",
             borderRadius: "6px",
             fontSize: "18px",
-            color: "#6b7280",
+            color: "#0d0e02ff",
             cursor: "pointer",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#f3f4f6";
+            e.currentTarget.style.backgroundColor = "#2367f0ff";
             e.currentTarget.style.color = "#111827";
           }}
           onMouseLeave={(e) => {
@@ -101,7 +101,7 @@ function AdminSideBar({ open, setOpen }) {
           flexDirection: "column",
           width: "256px",
           borderRight: "1px solid #e5e7eb",
-          backgroundColor: "#fff",
+          backgroundColor: "#ced8f3ff",
           padding: "24px",
         }}
         className="hidden lg:flex"

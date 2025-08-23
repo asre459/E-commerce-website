@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/banner-1.webp";
-import bannerTwo from "../../assets/banner-2.webp";
-import bannerThree from "../../assets/banner-3.webp";
-import {
+import bannerOne from "../../assets/images/banner-1.jpg";
+// import bannerTwo from "../../assets/images/banner-2.jpg";
+import bannerThree from "../../assets/images/banner-3.jpg";
+import{ 
   Airplay,
   BabyIcon,
   ChevronLeftIcon,
