@@ -21,7 +21,7 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
   "/order/getOrderDetailsForAdmin",
   async (id) => {
     const response = await axios.get(
-      `https://e-commerce-website-yyp5.onrender.com/orders/details/${id}`
+      `https://e-commerce-website-yyp5.onrender.com/api/admin/orders/details/${id}`
     );
 
     return response.data;

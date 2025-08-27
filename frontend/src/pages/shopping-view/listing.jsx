@@ -207,8 +207,9 @@ function ShoppingListing() {
         </div>
         <div style={gridStyle}>
           {productList && productList.length > 0
-            ? productList.map((productItem) => (
+            ? productList.map((productItem,index) => (
                 <ShoppingProductTile
+                  key={productItem.id || `product-${index}`}
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}

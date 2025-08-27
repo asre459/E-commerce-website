@@ -68,7 +68,7 @@ const loginUser = async (req, res) => {
       { expiresIn: "9d" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production",  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax" }).json({
       success: true,
       message: "Logged in successfully",
       user: {
@@ -109,6 +109,7 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.CLIENT_SECRET_KEY);
     req.user = decoded;
     next();
+
   } catch (error) {
     res.status(401).json({
       success: false,

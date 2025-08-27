@@ -4,7 +4,6 @@ import { X } from "lucide-react";
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
-const DialogPortal = DialogPrimitive.Portal;
 const DialogClose = DialogPrimitive.Close;
 
 const DialogOverlay = React.forwardRef(({ style, ...props }, ref) => (
@@ -23,7 +22,7 @@ const DialogOverlay = React.forwardRef(({ style, ...props }, ref) => (
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef(({ style, children, ...props }, ref) => (
-  <DialogPortal>
+  <DialogPrimitive.Portal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -40,7 +39,8 @@ const DialogContent = React.forwardRef(({ style, children, ...props }, ref) => (
         border: "1px solid hsl(240, 5.9%, 90%)",
         backgroundColor: "hsl(0, 0%, 100%)",
         padding: "1.5rem",
-        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        boxShadow:
+          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
         transition: "all 200ms",
         ...style,
       }}
@@ -59,12 +59,24 @@ const DialogContent = React.forwardRef(({ style, children, ...props }, ref) => (
         }}
       >
         <X size={16} />
-        <span style={{ position: "absolute", width: "1px", height: "1px", padding: 0, margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
+        <span
+          style={{
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            padding: 0,
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+            border: 0,
+          }}
+        >
           Close
         </span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
-  </DialogPortal>
+  </DialogPrimitive.Portal>
 ));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
@@ -125,7 +137,6 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 export {
   Dialog,
-  DialogPortal,
   DialogOverlay,
   DialogClose,
   DialogTrigger,

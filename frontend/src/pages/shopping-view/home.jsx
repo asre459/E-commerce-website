@@ -140,7 +140,9 @@ function ShoppingHome() {
     <div style={containerStyle}>
       <div style={bannerContainerStyle}>
         {featureImageList && featureImageList.map((slide, index) => (
-          <img key={index} src={slide?.image} style={bannerImageStyle(index === currentSlide)} />
+           slide?.image ? (
+          <img  key={slide.id || `slide-${index}`}  src={slide?.image} style={bannerImageStyle(index === currentSlide)}   alt={`Slide ${index + 1}`} />
+        ) : null
         ))}
         <Button
           variant="outline"
@@ -211,9 +213,9 @@ function ShoppingHome() {
           <h2 style={titleStyle}>Feature Products</h2>
           <div style={productGridStyle}>
             {productList && productList.length > 0
-              ? productList.map((productItem) => (
+              ? productList.map((productItem,index) => (
                   <ShoppingProductTile
-                    key={productItem.id}
+                 key={productItem.id || `product-${index}`}
                     handleGetProductDetails={handleGetProductDetails}
                     product={productItem}
                     handleAddtoCart={handleAddtoCart}
