@@ -74,6 +74,24 @@ function AuthRegister() {
           >
             Login
           </Link>
+            <Link
+    to="/auth/forgot-password"
+    style={{ marginLeft: "12px", fontWeight: "500", color: "#2563eb", textDecoration: "none" }}
+    onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
+    onMouseOut={(e) => (e.target.style.textDecoration = "none")}
+  >
+    Forgot Password?
+  </Link>
+  <Link
+to = "auth/resetPassword"
+style = {{ marginLeft: "12px", fontWeight: "500", color: "#2563eb", textDecoration: "none" }}
+onMouseOver = {(e) => (e.target.style.textDecoration = "underline")}
+onMouseOut = {(e) => (e.target.style.textDecoration = "none")}
+>
+Reset Password
+
+  </Link>
+
         </p>
       </div>
 

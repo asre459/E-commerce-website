@@ -1,36 +1,36 @@
+import { Fragment, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   BadgeCheck,
   ChartNoAxesCombined,
   LayoutDashboard,
   ShoppingBasket,
-  X
+  X,
+  Menu
 } from "lucide-react";
-import { Fragment } from "react";
-import { useNavigate } from "react-router-dom";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 
 const adminSidebarMenuItems = [
   {
     id: "dashboard",
     label: "Dashboard",
     path: "/admin/dashboard",
-    icon: <LayoutDashboard />,
+    icon: <LayoutDashboard size={20} />,
   },
   {
     id: "products",
     label: "Products",
     path: "/admin/products",
-    icon: <ShoppingBasket />,
+    icon: <ShoppingBasket size={20} />,
   },
   {
     id: "orders",
     label: "Orders",
     path: "/admin/orders",
-    icon: <BadgeCheck />,
+    icon: <BadgeCheck size={20} />,
   },
 ];
 
-function MenuItems({ setOpen }) {
+function MenuItems({ setOpen, isMobile }) {
   const navigate = useNavigate();
 
   return (
@@ -45,20 +45,39 @@ function MenuItems({ setOpen }) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "8px",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            fontSize: "18px",
-            color: "#0d0e02ff",
+            gap: "12px",
+            padding: isMobile ? "14px 16px" : "12px 14px",
+            borderRadius: "8px",
+            fontSize: isMobile ? "18px" : "16px",
+            color: "#4B5563",
             cursor: "pointer",
+            transition: "all 0.2s ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#2367f0ff";
-            e.currentTarget.style.color = "#111827";
+            if (!isMobile) {
+              e.currentTarget.style.backgroundColor = "#2367f0";
+              e.currentTarget.style.color = "white";
+            }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "#6b7280";
+            if (!isMobile) {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#4B5563";
+            }
+          }}
+          onTouchStart={(e) => {
+            if (isMobile) {
+              e.currentTarget.style.backgroundColor = "#2367f0";
+              e.currentTarget.style.color = "white";
+            }
+          }}
+          onTouchEnd={(e) => {
+            if (isMobile) {
+              setTimeout(() => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#4B5563";
+              }, 300);
+            }
           }}
         >
           {menuItem.icon}
@@ -69,52 +88,143 @@ function MenuItems({ setOpen }) {
   );
 }
 
-function AdminSideBar({ open, setOpen }) {
+function AdminSideBar() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <Fragment>
-      {/* Mobile sidebar */}
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" style={{ width: "256px" }}>
-          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-            <SheetHeader style={{ borderBottom: "1px solid #e5e7eb" }}>
-              <SheetTitle style={{ display: "flex", gap: "8px", marginTop: "20px", marginBottom: "20px" }}>
+      {/* Mobile menu button - shown only on mobile */}
+      {isMobile && (
+        <button
+          onClick={() => setOpen(true)}
+          style={{
+            position: "fixed",
+            top: "16px",
+            left: "16px",
+            zIndex: 40,
+            padding: "8px",
+            borderRadius: "8px",
+            backgroundColor: "#2367f0",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <Menu size={24} />
+        </button>
+      )}
+
+      {/* Mobile sidebar/drawer */}
+      {isMobile && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: open ? 0 : "-100%",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 50,
+            transition: "left 0.3s ease",
+          }}
+          onClick={() => setOpen(false)}
+        >
+          <div
+            style={{
+              width: "80%",
+              maxWidth: "320px",
+              height: "100%",
+              backgroundColor: "white",
+              padding: "24px",
+              display: "flex",
+              flexDirection: "column",
+              boxShadow: "2px 0 10px rgba(0, 0, 0, 0.1)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+              <div
+                onClick={() => navigate("/admin/dashboard")}
+                style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+              >
                 <ChartNoAxesCombined size={30} />
                 <h1 style={{ fontSize: "20px", fontWeight: "800" }}>Admin Panel</h1>
-              </SheetTitle>
-               <X 
+              </div>
+              <X 
                 size={24} 
                 onClick={() => setOpen(false)} 
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", color: "#4B5563" }}
               />
-            </SheetHeader>
-            <MenuItems setOpen={setOpen} isMobile={true}  />
+            </div>
+            <MenuItems setOpen={setOpen} isMobile={true} />
           </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Desktop sidebar */}
-      <aside
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "256px",
-          borderRight: "1px solid #e5e7eb",
-          backgroundColor: "#ced8f3ff",
-          padding: "24px",
-        }}
-        className="hidden lg:flex"
-      >
-        <div
-          onClick={() => navigate("/admin/dashboard")}
-          style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
-        >
-          <ChartNoAxesCombined size={30} />
-          <h1 style={{ fontSize: "20px", fontWeight: "800" }}>Admin Panel</h1>
         </div>
-        <MenuItems />
-      </aside>
+      )}
+
+      {/* Tablet sidebar - slightly narrower */}
+      {isTablet && (
+        <aside
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "220px",
+            borderRight: "1px solid #E5E7EB",
+            backgroundColor: "#F9FAFB",
+            padding: "20px",
+            height: "100vh",
+            position: "sticky",
+            top: 0,
+          }}
+        >
+          <div
+            onClick={() => navigate("/admin/dashboard")}
+            style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", marginBottom: "24px" }}
+          >
+            <ChartNoAxesCombined size={28} />
+            <h1 style={{ fontSize: "18px", fontWeight: "800" }}>Admin Panel</h1>
+          </div>
+          <MenuItems isMobile={false} />
+        </aside>
+      )}
+
+      {/* Desktop sidebar - full width */}
+      {!isMobile && !isTablet && (
+        <aside
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "256px",
+            borderRight: "1px solid #E5E7EB",
+            backgroundColor: "#F9FAFB",
+            padding: "24px",
+            height: "100vh",
+            position: "sticky",
+            top: 0,
+          }}
+        >
+          <div
+            onClick={() => navigate("/admin/dashboard")}
+            style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", marginBottom: "32px" }}
+          >
+            <ChartNoAxesCombined size={30} />
+            <h1 style={{ fontSize: "20px", fontWeight: "800" }}>Admin Panel</h1>
+          </div>
+          <MenuItems isMobile={false} />
+        </aside>
+      )}
     </Fragment>
   );
 }

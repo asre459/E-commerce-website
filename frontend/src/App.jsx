@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import AuthLayout from "./components/auth/layout";
 import AuthLogin from "./pages/auth/login";
+import AuthResetPassword from "./pages/auth/AuthResetpage";
+import AuthForgotPassword from "./pages/auth/AuthForgotPassword";
 import AuthRegister from "./pages/auth/register";
 import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
@@ -68,6 +70,8 @@ function App() {
         >
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+              <Route path="forgot-password" element={<AuthForgotPassword />} />
+          <Route path="reset-password/:token" element={<AuthResetPassword />} />
         </Route>
         <Route
           path="/admin"

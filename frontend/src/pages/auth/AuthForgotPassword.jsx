@@ -1,37 +1,29 @@
 import CommonForm from "@/components/common/form";
 import { useToast } from "@/components/ui/use-toast";
-import { loginFormControls } from "@/config";
-import { loginUser } from "@/store/auth-slice";
+import { forgotPasswordFormControls } from "@/config"; // we'll define this
+import { sendForgotPasswordEmail } from "@/store/auth-slice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
-const initialState = {
-  email: "",
-  password: "",
-};
+const initialState = { email: "" };
 
-function AuthLogin() {
+function AuthForgotPassword() {
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  function onSubmit(event) {
+  const onSubmit = (event) => {
     event.preventDefault();
-
-    dispatch(loginUser(formData)).then((data) => {
+    dispatch(sendForgotPasswordEmail(formData)).then((data) => {
       if (data?.payload?.success) {
-        toast({
-          title: data?.payload?.message,
-        });
+        toast({ title: data.payload.message });
+        setFormData(initialState);
       } else {
-        toast({
-          title: data?.payload?.message,
-          variant: "destructive",
-        });
+        toast({ title: data.payload.message, variant: "destructive" });
       }
     });
-  }
+  };
 
   return (
     <div
@@ -47,35 +39,25 @@ function AuthLogin() {
       {/* Header */}
       <div style={{ textAlign: "center" }}>
         <h1 style={{ fontSize: "28px", fontWeight: "bold", color: "#111", margin: 0 }}>
-          Sign in to your account
+          Forgot Password
         </h1>
         <p style={{ marginTop: "8px", fontSize: "14px" }}>
-          Don't have an account?
+          Remember your password?
           <Link
-            to="/auth/register"
+            to="/auth/login"
             style={{ marginLeft: "8px", fontWeight: "500", color: "#2563eb", textDecoration: "none" }}
             onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
             onMouseOut={(e) => (e.target.style.textDecoration = "none")}
           >
-            Register
-          </Link>
-        </p>
-        <p style={{ marginTop: "4px", fontSize: "14px" }}>
-          <Link
-            to="/auth/forgot-password"
-            style={{ fontWeight: "500", color: "#2563eb", textDecoration: "none" }}
-            onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
-            onMouseOut={(e) => (e.target.style.textDecoration = "none")}
-          >
-            Forgot Password?
+            Login
           </Link>
         </p>
       </div>
 
       {/* Form */}
       <CommonForm
-        formControls={loginFormControls}
-        buttonText={"Sign In"}
+        formControls={forgotPasswordFormControls}
+        buttonText="Send Reset Link"
         formData={formData}
         setFormData={setFormData}
         onSubmit={onSubmit}
@@ -84,4 +66,4 @@ function AuthLogin() {
   );
 }
 
-export default AuthLogin;
+export default AuthForgotPassword;

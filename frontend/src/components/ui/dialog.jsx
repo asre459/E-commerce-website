@@ -21,63 +21,79 @@ const DialogOverlay = React.forwardRef(({ style, ...props }, ref) => (
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-const DialogContent = React.forwardRef(({ style, children, ...props }, ref) => (
-  <DialogPrimitive.Portal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      style={{
-        position: "fixed",
-        left: "50%",
-        top: "50%",
-        zIndex: 50,
-        display: "grid",
-        width: "100%",
-        maxWidth: "32rem", // 512px
-        transform: "translate(-50%, -50%)",
-        gap: "1rem",
-        border: "1px solid hsl(240, 5.9%, 90%)",
-        backgroundColor: "hsl(0, 0%, 100%)",
-        padding: "1.5rem",
-        boxShadow:
-          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        transition: "all 200ms",
-        ...style,
-      }}
-      {...props}
-    >
-      {children}
-      <DialogPrimitive.Close
+const DialogContent = React.forwardRef(({ style, children, ...props }, ref) => {
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const gridColumns = windowWidth >= 768 ? "1fr 1fr" : "1fr"; // md breakpoint ~768px
+
+  return (
+    <DialogPrimitive.Portal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
         style={{
-          position: "absolute",
-          right: "1rem",
-          top: "1rem",
-          borderRadius: "0.125rem",
-          opacity: 0.7,
-          backgroundColor: "transparent",
-          transition: "opacity 200ms",
+          position: "fixed",
+          left: "50%",
+          top: "50%",
+          zIndex: 50,
+          display: "grid",
+          gridTemplateColumns: gridColumns,
+          gap: "2rem",
+          width: "100%",
+          maxWidth: "80rem",
+          transform: "translate(-50%, -50%)",
+          border: "1px solid hsl(240, 5.9%, 90%)",
+          backgroundColor: "hsl(0, 0%, 100%)",
+          padding: "1.5rem",
+          boxShadow:
+            "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)",
+          transition: "all 200ms",
+          maxHeight: "90vh",
+          overflow: "auto",
+          ...style,
         }}
+        {...props}
       >
-        <X size={16} />
-        <span
+        {children}
+        <DialogPrimitive.Close
           style={{
             position: "absolute",
-            width: "1px",
-            height: "1px",
-            padding: 0,
-            margin: "-1px",
-            overflow: "hidden",
-            clip: "rect(0, 0, 0, 0)",
-            whiteSpace: "nowrap",
-            border: 0,
+            right: "1rem",
+            top: "1rem",
+            borderRadius: "0.125rem",
+            opacity: 0.7,
+            backgroundColor: "transparent",
+            transition: "opacity 200ms",
+            cursor: "pointer",
           }}
         >
-          Close
-        </span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
-  </DialogPrimitive.Portal>
-));
+          <X size={16} />
+          <span
+            style={{
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              padding: 0,
+              margin: "-1px",
+              overflow: "hidden",
+              clip: "rect(0, 0, 0, 0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}
+          >
+            Close
+          </span>
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
+    </DialogPrimitive.Portal>
+  );
+});
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ style, ...props }) => (
@@ -111,10 +127,9 @@ const DialogTitle = React.forwardRef(({ style, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
     style={{
-      fontSize: "1.125rem",
-      fontWeight: 600,
-      lineHeight: "1.75rem",
-      letterSpacing: "-0.025em",
+      fontSize: "2rem",
+      fontWeight: "bold",
+      lineHeight: "2.5rem",
       ...style,
     }}
     {...props}
@@ -126,8 +141,8 @@ const DialogDescription = React.forwardRef(({ style, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
     style={{
-      fontSize: "0.875rem",
-      color: "hsl(240, 3.8%, 46.1%)",
+      fontSize: "1rem",
+      color: "#6B7280",
       ...style,
     }}
     {...props}

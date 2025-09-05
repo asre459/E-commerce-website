@@ -1,43 +1,33 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { StarIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { useToast } from "../ui/use-toast";
-import StarRatingComponent from "../common/star-rating";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { useToast } from "../ui/use-toast";
 import { setProductDetails } from "@/store/shop/products-slice";
+import { Label } from "../ui/label";
+import StarRatingComponent from "../common/star-rating";
+import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [isAddingReview, setIsAddingReview] = useState(false);
-  
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
+
   const { toast } = useToast();
 
   function handleRatingChange(getRating) {
     setRating(getRating);
   }
 
-  async function handleAddToCart(getCurrentProductId, getTotalStock) {
-    if (!user) {
-      toast({
-        title: "Please login to add items to cart",
-        variant: "destructive",
-      });
-      return;
-    }
-    
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -56,31 +46,20 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
       }
     }
 
-    setIsAddingToCart(true);
-    try {
-      const result = await dispatch(
-        addToCart({
-          userId: user?.id,
-          productId: getCurrentProductId,
-          quantity: 1,
-        })
-      ).unwrap();
-      
-      if (result?.success) {
-        await dispatch(fetchCartItems(user?.id));
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
         toast({
-          title: "Product added to cart",
+          title: "Product is added to cart",
         });
       }
-    } catch (error) {
-      toast({
-        title: "Failed to add product to cart",
-        variant: "destructive",
-      });
-      console.error("Add to cart error:", error);
-    } finally {
-      setIsAddingToCart(false);
-    }
+    });
   }
 
   function handleDialogClose() {
@@ -90,59 +69,30 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     setReviewMsg("");
   }
 
-  async function handleAddReview() {
-    if (!user) {
-      toast({
-        title: "Please login to add a review",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (rating === 0) {
-      toast({
-        title: "Please select a rating",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsAddingReview(true);
-    try {
-      const result = await dispatch(
-        addReview({
-          productId: productDetails?._id,
-          userId: user?.id,
-          userName: user?.userName,
-          reviewMessage: reviewMsg,
-          reviewValue: rating,
-        })
-      ).unwrap();
-      
-      if (result.success) {
+  function handleAddReview() {
+    dispatch(
+      addReview({
+        productId: productDetails?._id,
+        userId: user?.id,
+        userName: user?.userName,
+        reviewMessage: reviewMsg,
+        reviewValue: rating,
+      })
+    ).then((data) => {
+      if (data.payload.success) {
         setRating(0);
         setReviewMsg("");
-        await dispatch(getReviews(productDetails?._id));
+        dispatch(getReviews(productDetails?._id));
         toast({
           title: "Review added successfully!",
         });
       }
-    } catch (error) {
-      toast({
-        title: "Failed to add review",
-        variant: "destructive",
-      });
-      console.error("Review error:", error);
-    } finally {
-      setIsAddingReview(false);
-    }
+    });
   }
 
   useEffect(() => {
-    if (productDetails !== null && open) {
-      dispatch(getReviews(productDetails?._id));
-    }
-  }, [productDetails, open, dispatch]);
+    if (productDetails !== null) dispatch(getReviews(productDetails?._id));
+  }, [productDetails]);
 
   const averageReview =
     reviews && reviews.length > 0
@@ -150,117 +100,141 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         reviews.length
       : 0;
 
+  // Inline styles
+  const styles = {
+    dialogContent: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "2rem",
+      padding: "3rem",
+      maxWidth: "70vw",
+    },
+    imageContainer: {
+      position: "relative",
+      overflow: "hidden",
+      borderRadius: "0.5rem",
+    },
+    image: {
+      width: "100%",
+      height: "auto",
+      objectFit: "cover",
+      aspectRatio: "1 / 1",
+    },
+    title: { fontSize: "2rem", fontWeight: "800" },
+    description: { color: "#6B7280", fontSize: "1.5rem", marginTop: "1rem", marginBottom: "1.25rem" },
+    priceContainer: { display: "flex", justifyContent: "space-between", alignItems: "center" },
+    originalPrice: (salePrice) => ({
+      fontSize: "1.875rem",
+      fontWeight: "700",
+      color: "#3B82F6",
+      textDecoration: salePrice > 0 ? "line-through" : "none",
+    }),
+    salePrice: { fontSize: "1.5rem", fontWeight: "700", color: "#6B7280" },
+    ratingContainer: { display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" },
+    reviewsContainer: { maxHeight: "300px", overflowY: "auto" },
+    reviewItem: { display: "flex", gap: "1rem" },
+    reviewContent: { display: "grid", gap: "0.25rem" },
+    reviewMessage: { color: "#6B7280" },
+    addReviewContainer: { display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "2.5rem" },
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="max-w-5xl grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-12">
-        <div className="relative overflow-hidden rounded-lg">
+      <DialogContent style={styles.dialogContent}>
+        <div style={styles.imageContainer}>
           <img
             src={productDetails?.image}
             alt={productDetails?.title}
-            className="w-full h-auto object-cover aspect-square"
+            style={styles.image}
           />
         </div>
-        
-        <div className="flex flex-col h-full">
-          <DialogHeader className="px-0">
-            <DialogTitle className="text-3xl font-bold">{productDetails?.title}</DialogTitle>
-          </DialogHeader>
-          
-          <p className="text-gray-500 text-lg mt-2 mb-5">
-            {productDetails?.description}
-          </p>
-          
-          <div className="flex justify-between items-center mb-2">
-            <p
-              className={`text-2xl font-bold text-blue-500 ${
-                productDetails?.salePrice > 0 ? "line-through" : ""
-              }`}
-            >
+        <div>
+          <div>
+            <h1 style={styles.title}>{productDetails?.title}</h1>
+            <p style={styles.description}>{productDetails?.description}</p>
+          </div>
+
+          <div style={styles.priceContainer}>
+            <p style={styles.originalPrice(productDetails?.salePrice)}>
               ${productDetails?.price}
             </p>
             {productDetails?.salePrice > 0 && (
-              <p className="text-xl font-bold text-gray-600">
-                ${productDetails?.salePrice}
-              </p>
+              <p style={styles.salePrice}>${productDetails?.salePrice}</p>
             )}
           </div>
-          
-          <div className="flex items-center gap-2 mb-6">
+
+          <div style={styles.ratingContainer}>
             <StarRatingComponent rating={averageReview} />
-            <span className="text-gray-500">({averageReview.toFixed(2)})</span>
+            <span style={{ color: "#6B7280" }}>({averageReview.toFixed(2)})</span>
           </div>
-          
-          <div className="mt-4 mb-6">
+
+          <div style={{ marginTop: "1.25rem", marginBottom: "1.25rem" }}>
             {productDetails?.totalStock === 0 ? (
-              <Button className="w-full opacity-60 cursor-not-allowed">
+              <Button style={{ width: "100%", opacity: 0.6, cursor: "not-allowed" }}>
                 Out of Stock
               </Button>
             ) : (
               <Button
-                className="w-full"
+                style={{ width: "100%" }}
                 onClick={() =>
                   handleAddToCart(productDetails?._id, productDetails?.totalStock)
                 }
-                disabled={isAddingToCart}
               >
-                {isAddingToCart ? "Adding..." : "Add to Cart"}
+                Add to Cart
               </Button>
             )}
           </div>
-          
-          <Separator className="my-4" />
-          
-          <div className="flex-grow overflow-auto max-h-80">
-            <h2 className="text-xl font-bold mb-4">Reviews</h2>
-            
-            <div className="space-y-6">
+
+          <Separator />
+
+          <div style={styles.reviewsContainer}>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "1rem" }}>
+              Reviews
+            </h2>
+            <div style={{ display: "grid", gap: "1.5rem" }}>
               {reviews && reviews.length > 0 ? (
                 reviews.map((reviewItem) => (
-                  <div key={`${reviewItem.userId}-${reviewItem.createdAt || ""}`} 
-                       className="flex gap-4">
-                    <Avatar className="w-10 h-10 border border-gray-200">
+                  <div key={reviewItem._id} style={styles.reviewItem}>
+                    <Avatar style={{ width: "2.5rem", height: "2.5rem", border: "1px solid #e5e7eb" }}>
                       <AvatarFallback>
-                        {reviewItem?.userName?.[0]?.toUpperCase() || "U"}
+                        {reviewItem?.userName[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold">{reviewItem?.userName}</h3>
+                    <div style={styles.reviewContent}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <h3 style={{ fontWeight: "700" }}>{reviewItem?.userName}</h3>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.125rem" }}>
                         <StarRatingComponent rating={reviewItem?.reviewValue} />
                       </div>
-                      <p className="text-gray-500">{reviewItem.reviewMessage}</p>
+                      <p style={styles.reviewMessage}>{reviewItem.reviewMessage}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500">No reviews yet</p>
+                <h1>No Reviews</h1>
               )}
             </div>
-            
-            <div className="mt-8 space-y-4">
+
+            <div style={styles.addReviewContainer}>
               <Label>Write a review</Label>
-              <div className="flex gap-1">
-                <StarRatingComponent 
-                  rating={rating} 
-                  handleRatingChange={handleRatingChange} 
-                  editable={true}
+              <div style={{ display: "flex", gap: "0.25rem" }}>
+                <StarRatingComponent
+                  rating={rating}
+                  handleRatingChange={handleRatingChange}
                 />
               </div>
               <Input
                 name="reviewMsg"
                 value={reviewMsg}
                 onChange={(event) => setReviewMsg(event.target.value)}
-                placeholder="Share your experience with this product..."
-                className="mt-2"
+                placeholder="Write a review..."
               />
-              <Button 
-                onClick={handleAddReview} 
-                disabled={reviewMsg.trim() === "" || rating === 0 || isAddingReview}
-                className="mt-2"
+              <Button
+                onClick={handleAddReview}
+                disabled={reviewMsg.trim() === ""}
               >
-                {isAddingReview ? "Submitting..." : "Submit Review"}
+                Submit
               </Button>
             </div>
           </div>

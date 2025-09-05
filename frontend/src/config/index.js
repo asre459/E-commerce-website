@@ -38,6 +38,25 @@ export const loginFormControls = [
     type: "password",
   },
 ];
+export const forgotPasswordFormControls = [
+  {
+    name: "email",
+    label: "Email",
+    type: "email",
+    placeholder: "Enter your email",
+    required: true,
+  },
+];
+export const resetPasswordFormControls = [
+  {
+    name: "newPassword",
+    label: "New Password",
+    type: "password",
+    placeholder: "Enter new password",
+    required: true,
+  },
+];
+
 
 export const addProductFormElements = [
   {
@@ -151,6 +170,7 @@ export const categoryOptionsMap = {
   accessories: "Accessories",
   footwear: "Footwear",
 };
+
 
 export const brandOptionsMap = {
   nike: "Nike",

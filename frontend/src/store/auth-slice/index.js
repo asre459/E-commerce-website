@@ -72,6 +72,28 @@ export const checkAuth = createAsyncThunk(
     return response.data;
   }
 );
+export const sendForgotPasswordEmail = createAsyncThunk(
+  "/auth/forgot-password",
+  async (formData) => {
+    const response = await axios.post(
+      "https://e-commerce-website-yyp5.onrender.com/api/auth/forgot-password",
+      formData,
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+);
+export const resetUserPassword = createAsyncThunk(
+  "/auth/reset-password",
+  async ({ token, newPassword }) => {
+    const response = await axios.post(
+      "https://e-commerce-website-yyp5.onrender.com/api/auth/reset-password",
+      { token, newPassword },
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -126,6 +148,22 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
          console.error("CheckAuth failed:", action.error);
+      }).addCase(sendForgotPasswordEmail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(sendForgotPasswordEmail.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(sendForgotPasswordEmail.rejected, (state) => {
+        state.isLoading = false;
+      }).addCase(resetUserPassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resetUserPassword.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(resetUserPassword.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });

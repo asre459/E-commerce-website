@@ -9,27 +9,33 @@ import {
 } from "@/store/shop/order-slice";
 
 function ShoppingOrders() {
-  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
 
   useEffect(() => {
     if (user?.id) dispatch(getAllOrdersByUserId(user?.id));
   }, [dispatch, user?.id]);
 
-  useEffect(() => {
-    if (orderDetails !== null) setOpenDetailsDialog(true);
-  }, [orderDetails]);
+  const handleViewOrderDetails = (orderId) => {
+    dispatch(getOrderDetails(orderId)).then(() => {
+      setShowOrderDetails(true);
+    });
+  };
 
-  function handleFetchOrderDetails(getId) {
-    dispatch(getOrderDetails(getId));
-  }
+  const handleCloseOrderDetails = () => {
+    setShowOrderDetails(false);
+    setSelectedOrder(null);
+    dispatch(resetOrderDetails());
+  };
 
   function getBadgeStyle(status) {
     let bgColor = "#000000";
     if (status === "confirmed") bgColor = "#22C55E"; // green
     else if (status === "rejected") bgColor = "#DC2626"; // red
+    
     return {
       backgroundColor: bgColor,
       color: "#FFFFFF",
@@ -37,9 +43,12 @@ function ShoppingOrders() {
       borderRadius: "9999px",
       display: "inline-block",
       textTransform: "capitalize",
+      fontSize: "12px",
+      fontWeight: "500",
     };
   }
 
+  // Responsive styles
   const cardStyle = {
     border: "1px solid #E5E7EB",
     borderRadius: "8px",
@@ -69,33 +78,23 @@ function ShoppingOrders() {
     padding: "12px",
     borderBottom: "1px solid #E5E7EB",
     fontWeight: "600",
+    fontSize: "14px",
   };
 
   const tdStyle = {
     padding: "12px",
     borderBottom: "1px solid #E5E7EB",
+    fontSize: "14px",
   };
 
-  const dialogStyle = {
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: "#FFFFFF",
-    padding: "24px",
+  // Mobile responsive styles
+  const mobileCardStyle = {
+    border: "1px solid #E5E7EB",
     borderRadius: "8px",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
-    zIndex: 1000,
-  };
-
-  const overlayStyle = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    zIndex: 999,
+    padding: "16px",
+    marginBottom: "16px",
+    backgroundColor: "#FFFFFF",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
   };
 
   return (
@@ -103,7 +102,9 @@ function ShoppingOrders() {
       <div style={cardHeaderStyle}>
         <h2 style={cardTitleStyle}>Order History</h2>
       </div>
-      <div style={{ overflowX: "auto" }}>
+      
+      {/* Desktop Table View */}
+      <div style={{ overflowX: "auto", display: window.innerWidth > 768 ? "block" : "none" }}>
         <table style={tableStyle}>
           <thead>
             <tr>
@@ -118,40 +119,26 @@ function ShoppingOrders() {
             {orderList && orderList.length > 0 ? (
               orderList.map((orderItem) => (
                 <tr key={orderItem?._id}>
-                  <td style={tdStyle}>{orderItem?._id}</td>
-                  <td style={tdStyle}>{orderItem?.orderDate.split("T")[0]}</td>
+                  <td style={tdStyle}>{orderItem?._id?.substring(0, 8)}...</td>
+                  <td style={tdStyle}>{orderItem?.orderDate?.split("T")[0] || "N/A"}</td>
                   <td style={tdStyle}>
                     <span style={getBadgeStyle(orderItem?.orderStatus)}>
                       {orderItem?.orderStatus}
                     </span>
                   </td>
-                  <td style={tdStyle}>${orderItem?.totalAmount}</td>
+                  <td style={tdStyle}>${orderItem?.totalAmount || "0.00"}</td>
                   <td style={tdStyle}>
                     <Button
-                      style={{ backgroundColor: "#3B82F6", color: "#FFFFFF" }}
-                      onClick={() => handleFetchOrderDetails(orderItem?._id)}
+                      style={{ 
+                        backgroundColor: "#3B82F6", 
+                        color: "#FFFFFF",
+                        padding: "8px 16px",
+                        fontSize: "14px"
+                      }}
+                      onClick={() => handleViewOrderDetails(orderItem?._id)}
                     >
                       View Details
                     </Button>
-                    {openDetailsDialog && orderDetails && (
-                      <>
-                        <div style={overlayStyle} onClick={() => { setOpenDetailsDialog(false); dispatch(resetOrderDetails()); }}></div>
-                        <div style={dialogStyle}>
-                          <ShoppingOrderDetailsView order={orderDetails} />
-                          <Button
-                            style={{
-                              marginTop: "16px",
-                              backgroundColor: "#3B82F6",
-                              color: "#FFFFFF",
-                              width: "100%",
-                            }}
-                            onClick={() => { setOpenDetailsDialog(false); dispatch(resetOrderDetails()); }}
-                          >
-                            Close
-                          </Button>
-                        </div>
-                      </>
-                    )}
                   </td>
                 </tr>
               ))
@@ -163,6 +150,57 @@ function ShoppingOrders() {
           </tbody>
         </table>
       </div>
+      
+      {/* Mobile Card View */}
+      <div style={{ display: window.innerWidth <= 768 ? "block" : "none" }}>
+        {orderList && orderList.length > 0 ? (
+          orderList.map((orderItem) => (
+            <div key={orderItem?._id} style={mobileCardStyle}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <div style={{ fontWeight: "600" }}>Order ID:</div>
+                <div>{orderItem?._id?.substring(0, 8)}...</div>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <div style={{ fontWeight: "600" }}>Date:</div>
+                <div>{orderItem?.orderDate?.split("T")[0] || "N/A"}</div>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <div style={{ fontWeight: "600" }}>Status:</div>
+                <div>
+                  <span style={getBadgeStyle(orderItem?.orderStatus)}>
+                    {orderItem?.orderStatus}
+                  </span>
+                </div>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                <div style={{ fontWeight: "600" }}>Price:</div>
+                <div>${orderItem?.totalAmount || "0.00"}</div>
+              </div>
+              <Button
+                style={{ 
+                  backgroundColor: "#3B82F6", 
+                  color: "#FFFFFF",
+                  width: "100%",
+                  padding: "8px 16px"
+                }}
+                onClick={() => handleViewOrderDetails(orderItem?._id)}
+              >
+                View Details
+              </Button>
+            </div>
+          ))
+        ) : (
+          <div style={{ textAlign: "center", padding: "24px" }}>No orders found.</div>
+        )}
+      </div>
+      
+      {/* Order Details Modal */}
+      {showOrderDetails && orderDetails && (
+        <ShoppingOrderDetailsView 
+          orderDetails={orderDetails} 
+          onClose={handleCloseOrderDetails}
+        />
+      )}
     </div>
   );
 }

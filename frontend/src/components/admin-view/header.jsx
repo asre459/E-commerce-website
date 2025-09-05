@@ -1,8 +1,8 @@
-import { AlignJustify, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/store/auth-slice";
 
-function AdminHeader({ setOpen }) {
+function AdminHeader() {
   const dispatch = useDispatch();
 
   function handleLogout() {
@@ -13,51 +13,46 @@ function AdminHeader({ setOpen }) {
     header: {
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
-      padding: "12px 16px",
-      backgroundColor: "#cadbecff",
+      justifyContent: "flex-end",
+      padding: "16px 24px",
+      backgroundColor: "#f8f9fa",
       borderBottom: "1px solid #dee2e6",
-    },
-    menuButton: {
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-      padding: "8px 12px",
-      backgroundColor: "#007bff",
-      color: "black",
-      borderRadius: "4px",
-      cursor: "pointer",
-      border: "none",
-      fontSize: "14px",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
     },
     logoutButton: {
       display: "inline-flex",
       alignItems: "center",
       gap: "8px",
-      padding: "8px 16px",
+      padding: "10px 18px",
       backgroundColor: "#dc3545",
-      color: "black",
-      borderRadius: "4px",
+      color: "white",
+      borderRadius: "6px",
       cursor: "pointer",
       border: "none",
       fontSize: "14px",
       fontWeight: "500",
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      transition: "all 0.2s ease",
     },
   };
 
   return (
     <header style={style.header}>
-      <button onClick={() => setOpen(true)} style={style.menuButton}>
-        <AlignJustify />
-        <span style={{ fontSize: "0px" }}>Toggle Menu</span>
+      <button 
+        onClick={handleLogout} 
+        style={style.logoutButton}
+        onMouseOver={(e) => {
+          e.target.style.backgroundColor = "#bd2130";
+          e.target.style.transform = "translateY(-1px)";
+        }}
+        onMouseOut={(e) => {
+          e.target.style.backgroundColor = "#dc3545";
+          e.target.style.transform = "translateY(0)";
+        }}
+      >
+        <LogOut size={18} />
+        Logout
       </button>
-      <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-        <button onClick={handleLogout} style={style.logoutButton}>
-          <LogOut />
-          Logout
-        </button>
-      </div>
     </header>
   );
 }
